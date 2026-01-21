@@ -96,70 +96,18 @@ export function calculateBestShift(songHighest: string, userHighest: string): nu
 
     // We want (sMidi + shift) % 12 === uMidi % 12 (Same pitch class)?
     // NO. We want the song's highest note to literally BECOME the user's highest note.
-    // User Highest Note is a LIMIT.
-    // So "Highest note becomes User's Highest Note".
-    // Reference: "Highest note matches voice range".
-    // So target = uMidi.
-    // sMidi + shift = uMidi.
-    // shift = uMidi - sMidi.
-
-    // But we can shift by octaves too?
-    // "Calculate both plus and minus, choose smaller absolute value".
-    // This implies we are matching the *Pitch Class* of the user's highest note, but in the closest octave to the song's original key?
-    // Wait. "My Voice Limit" is a physical frequency limit.
-    // If my limit is A4.
-    // And song max is C5.
-    // I MUST lower it by 3 semitones. (-3).
-    // I cannot "raise it by 9" because then max becomes A5 (way too high).
-    // So usually you strictly match the specific user note.
-
-    // HOWEVER, the user instruction: "Calculate both plus and minus... choose smaller ABS".
-    // Example: +5 and -7.
-    // This implies the user treats "My Highest Note" as a *Preferred Key Center Identifier* or something?
-    // Or maybe "Highest Note" input is just a Note Name (e.g. "A"), not fully qualified?
-    // "My Highest Note (=Voice Range)".
-    // If I say "My Range is hiA". That is a specific pitch A4.
-    // If current song is C5. Diff = -3.
-    // If I calculate "+9", result is A5. That is impossible to sing.
-    // Why would he ask to compare + and -?
-
-    // INTERPRETATION A: He sings in multiple octaves? Unlikely.
-    // INTERPRETATION B: He wants to modulate the song to a key where the highest note is *semitone-equivalent* to his highest note, chosen to keep the key change minimal.
-    // Example: Song Max = C (could be C4 or C5). User Max = A.
-    // C to A is -3 or +9.
-    // If -3: Key becomes A.
-    // If +9: Key becomes A.
-    // He chooses the smaller shift (-3).
-    // This makes sense if he adjusts octaves vocally (singing an octave lower).
-    // YES. Karaoke users often drop an octave ("oku-shita").
-    // So he wants the *Key Setting* that gives the smallest deviation from original, assuming he will sing in whatever octave fits, but the 'Key' matches his relative max.
 
     let shift = uMidi - sMidi;
-
-    // Normalize shift to range (-6 to +6)?
-    // Or rather find equivalent shift `k` such that `k = shift + 12n` and `abs(k)` is minimized.
-
-    // e.g. shift = -3.
-    // Alts: -3+12 = +9. -3-12 = -15.
-    // Min abs is 3. Result -3.
-
-    // e.g. shift = +8.
-    // Alts: +8-12 = -4.
-    // Min abs is 4. Result -4.
-
-    // This logic effectively finds the closest target key class.
 
     // Formula:
     // let k = (shift % 12);
     // if (k > 6) k -= 12;
     // if (k < -6) k += 12;
-    // (Be careful with JS modulo of negative numbers)
 
     let diff = (shift % 12 + 12) % 12; // 0 to 11
     if (diff > 6) diff -= 12; // -5 to +6
 
     // Now diff is between -5 and +6.
-    // Wait, if diff is +6 (or -6, same thing).
     // User rule: "If absolute value is 6, at that time adjust to become around mid2".
 
     if (Math.abs(diff) === 6) {
@@ -182,4 +130,25 @@ export function calculateBestShift(songHighest: string, userHighest: string): nu
     }
 
     return diff;
+}
+
+const NOTE_NAMES_BASE = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+
+export function generateNoteOptions(): string[] {
+    const options: string[] = [];
+
+    // mid1: A, A#, B
+    ['A', 'A#', 'B'].forEach(n => options.push(`mid1${n}`));
+
+    // mid2: All
+    NOTE_NAMES_BASE.forEach(n => options.push(`mid2${n}`));
+
+    // hi: All
+    NOTE_NAMES_BASE.forEach(n => options.push(`hi${n}`));
+
+    // hihi: Up to A
+    const hihiNotes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A'];
+    hihiNotes.forEach(n => options.push(`hihi${n}`));
+
+    return options;
 }
