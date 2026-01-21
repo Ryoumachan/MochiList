@@ -88,8 +88,33 @@ function App() {
 
   const handleRandomPickup = () => {
     if (visibleSongs.length === 0) return;
-    const random = visibleSongs[Math.floor(Math.random() * visibleSongs.length)];
-    setEditingSong(random);
+
+    // Weighted random: songs not selected recently have higher weight
+    const history = JSON.parse(localStorage.getItem('randomHistory') || '[]') as string[];
+
+    const weights = visibleSongs.map(song => {
+      const idx = history.indexOf(song.id);
+      if (idx === -1) return 10; // Never selected = highest weight
+      return Math.max(1, 10 - idx); // More recent = lower weight
+    });
+
+    const totalWeight = weights.reduce((a, b) => a + b, 0);
+    let r = Math.random() * totalWeight;
+    let selected = visibleSongs[0];
+
+    for (let i = 0; i < visibleSongs.length; i++) {
+      r -= weights[i];
+      if (r <= 0) {
+        selected = visibleSongs[i];
+        break;
+      }
+    }
+
+    // Update history (keep last 20)
+    const newHistory = [selected.id, ...history.filter(id => id !== selected.id)].slice(0, 20);
+    localStorage.setItem('randomHistory', JSON.stringify(newHistory));
+
+    setEditingSong(selected);
   };
 
   const handleUserNoteChange = (note: string) => {
@@ -245,15 +270,15 @@ function App() {
         <div style={{ paddingRight: '2rem', marginBottom: '1.5rem' }}>
           <h1 style={{ fontSize: '2rem', fontWeight: 'bold', background: 'linear-gradient(to right, #fff, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '0.2rem' }}>MochiList</h1>
           <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-            最高のパフォーマンスを。音域管理ツール
+            持ち歌管理ツール
           </p>
         </div>
 
         <button
           onClick={() => signOut()}
-          style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', color: 'var(--text-secondary)', padding: '0.5rem' }}
+          style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', color: 'var(--text-secondary)', padding: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.8rem' }}
         >
-          <LogOut size={20} />
+          ログアウト <LogOut size={18} />
         </button>
 
         {/* Dashboard Grid Layout */}
