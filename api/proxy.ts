@@ -70,14 +70,17 @@ export default async function handler(request: Request) {
                 const t = (text || '').replace(/\s+/g, ' ');
                 let highest = null, chest = null, lowest = null;
 
-                // Regex from reference
-                const m1 = t.match(/最高音[：:\s]*([^\s、。,、\n<>]{1,20})/);
+                // Strict Mode: Only match ASCII notes (hiA, mid2G#, etc.)
+                // Excludes Matches containing Japanese/Hiragana/Kanji
+                const notePattern = "([a-zA-Z0-9#+-]+)";
+
+                const m1 = t.match(new RegExp(`最高音[：:\\s]*${notePattern}`));
                 if (m1) highest = m1[1].trim();
 
-                const m2 = t.match(/地声(の)?最高(音)?[：:\s]*([^\s、。,、\n<>]{1,20})/);
-                if (m2) chest = m2[3].trim();
+                const m2 = t.match(new RegExp(`地声(?:の)?最高(?:音)?[：:\\s]*${notePattern}`));
+                if (m2) chest = m2[1].trim();
 
-                const m3 = t.match(/最低音[：:\s]*([^\s、。,、\n<>]{1,20})/);
+                const m3 = t.match(new RegExp(`最低音[：:\\s]*${notePattern}`));
                 if (m3) lowest = m3[1].trim();
 
                 return { highestNote: highest || null, highestChestNote: chest || null, lowestNote: lowest || null };
