@@ -1,5 +1,5 @@
 export const config = {
-    runtime: 'edge',
+    runtime: 'nodejs', // Switch to Node.js for better scraping stability
 };
 
 export default async function handler(request: Request) {
@@ -17,7 +17,7 @@ export default async function handler(request: Request) {
         return new Response(null, { status: 204, headers: corsHeaders });
     }
 
-    // 1. Direct URL Fetch Mode (for scraping a specific page if needed later)
+    // 1. Direct URL Fetch Mode
     if (targetUrl) {
         try {
             const response = await fetch(targetUrl, {
@@ -51,6 +51,9 @@ export default async function handler(request: Request) {
             // Helper: Extract Snippets
             const extractSnippets = (htmlText: string) => {
                 const parts = htmlText.split(/result__snippet/i);
+                // DEBUG: Check parts length
+                if (parts.length <= 1) return "";
+
                 const texts = [];
                 for (let i = 1; i < parts.length; i++) {
                     const after = parts[i].replace(/^[^>]*>/, '');
@@ -89,13 +92,23 @@ export default async function handler(request: Request) {
             const combinedText = extractSnippets(html);
             const result = parseVocalRange(combinedText);
 
-            return new Response(JSON.stringify(result), {
+            // Add Debug Metadata
+            const payload = {
+                ...result,
+                debug: {
+                    htmlLength: html.length,
+                    textLength: combinedText.length,
+                    status: response.status
+                }
+            };
+
+            return new Response(JSON.stringify(payload), {
                 headers: { 'Content-Type': 'application/json', ...corsHeaders }
             });
 
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
-            return new Response(JSON.stringify({ error: 'Analysis failed' }), { status: 500, headers: corsHeaders });
+            return new Response(JSON.stringify({ error: 'Analysis failed', details: e.message }), { status: 500, headers: corsHeaders });
         }
     }
 

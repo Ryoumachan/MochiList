@@ -57,10 +57,12 @@ export function SongDetailModal({ isOpen, song, onClose, onSave, onDelete }: Son
                 }));
                 alert('音域情報を自動取得しました！\n誤りがある場合はWeb検索で確認してください。');
             } else {
-                alert('情報が見つかりませんでした。\nWeb検索を試してみてください。');
+                const debugInfo = data.debug ?
+                    `\n[Debug] Status: ${data.debug.status}, HTML: ${data.debug.htmlLength}ch, Text: ${data.debug.textLength}ch` : '';
+                alert(`情報が見つかりませんでした。\nWeb検索を試してみてください。${debugInfo}`);
             }
-        } catch (e) {
-            alert('エラーが発生しました');
+        } catch (e: any) {
+            alert(`エラーが発生しました: ${e.message}`);
         } finally {
             setIsAnalyzing(false);
         }
