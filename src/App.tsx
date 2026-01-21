@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Plus, ArrowUpDown, LogOut, Loader2 } from 'lucide-react';
+import { Plus, ArrowUpDown, LogOut, Loader2, Search } from 'lucide-react';
 import { useSongs } from './hooks/useSongs';
 import { SongList } from './components/SongList';
 import { SongSearchModal } from './components/SongSearchModal';
@@ -65,82 +65,100 @@ function App() {
 
   return (
     <div className="container">
-      <header style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: '2rem',
-        marginTop: '1rem',
-        padding: '1.5rem',
-      }} className="glass-panel">
-        <div>
-          <h1 style={{ fontSize: '1.8rem', fontWeight: 'bold', background: 'linear-gradient(to right, #fff, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>MochiList</h1>
-          <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
+      <header className="glass-panel" style={{ padding: '1.5rem', marginBottom: '2rem', marginTop: '1rem', position: 'relative' }}>
+        <div style={{ paddingRight: '2rem' }}>
+          <h1 style={{ fontSize: '2rem', fontWeight: 'bold', background: 'linear-gradient(to right, #fff, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '0.2rem' }}>MochiList</h1>
+          <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
             最高のパフォーマンスを。音域管理ツール
           </p>
         </div>
-        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-          <div style={{ marginRight: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <ArrowUpDown size={16} color="var(--text-secondary)" />
-            <select
-              value={sortOption}
-              onChange={e => setSortOption(e.target.value as SortOption)}
+
+        <button
+          onClick={() => signOut()}
+          style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', color: 'var(--text-secondary)', padding: '0.5rem' }}
+        >
+          <LogOut size={20} />
+        </button>
+
+        <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {/* Action Buttons Row */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(100px, 1fr) 2fr', gap: '1rem' }}>
+            <button
+              onClick={handleManualAdd}
+              className="glass-panel"
               style={{
-                background: 'transparent',
-                color: 'var(--text-primary)',
-                border: 'none',
-                fontSize: '0.9rem',
-                cursor: 'pointer',
-                outline: 'none',
-                appearance: 'none', // Hide default arrow
-                textAlign: 'right'
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                padding: '1rem', fontWeight: 600, fontSize: '0.9rem',
+                background: 'rgba(30, 41, 59, 0.5)'
               }}
             >
-              <option value="addedDesc" style={{ background: '#1e293b' }}>登録順 (新しい)</option>
-              <option value="addedAsc" style={{ background: '#1e293b' }}>登録順 (古い)</option>
-              <option value="keyShiftDesc" style={{ background: '#1e293b' }}>変化大 (|MyKey|)</option>
-              <option value="keyShiftAsc" style={{ background: '#1e293b' }}>変化小 (|MyKey|)</option>
-              <option value="highestNoteDesc" style={{ background: '#1e293b' }}>最高音 (高い順)</option>
-              <option value="highestNoteAsc" style={{ background: '#1e293b' }}>最高音 (低い順)</option>
-              <option value="artistAsc" style={{ background: '#1e293b' }}>アーティスト名</option>
-              <option value="titleAsc" style={{ background: '#1e293b' }}>曲名</option>
-            </select>
+              手動登録
+            </button>
+            <button
+              onClick={() => setIsSearchOpen(true)}
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                padding: '1rem', fontWeight: 600, fontSize: '1rem',
+                background: 'linear-gradient(135deg, #38bdf8, #818cf8)',
+                color: 'white',
+                borderRadius: 'var(--radius-lg)',
+                boxShadow: '0 4px 15px rgba(56, 189, 248, 0.3)'
+              }}
+            >
+              <Search size={20} />
+              楽曲追加
+            </button>
           </div>
 
-          <button
-            className="glass-panel"
-            style={{ padding: '0.5rem 1rem', fontSize: '0.9rem', color: 'var(--text-primary)' }}
-            onClick={handleManualAdd}
-          >
-            手動登録
-          </button>
+          {/* Sort & Random Row */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+              <ArrowUpDown size={16} />
+              <select
+                value={sortOption}
+                onChange={e => setSortOption(e.target.value as SortOption)}
+                style={{
+                  background: 'transparent',
+                  color: 'inherit',
+                  border: 'none',
+                  fontSize: 'inherit',
+                  cursor: 'pointer',
+                  outline: 'none',
+                  appearance: 'none'
+                }}
+              >
+                <option value="addedDesc" style={{ background: '#1e293b' }}>登録順 (新しい)</option>
+                <option value="addedAsc" style={{ background: '#1e293b' }}>登録順 (古い)</option>
+                <option value="keyShiftDesc" style={{ background: '#1e293b' }}>変化大 (|MyKey|)</option>
+                <option value="keyShiftAsc" style={{ background: '#1e293b' }}>変化小 (|MyKey|)</option>
+                <option value="highestNoteDesc" style={{ background: '#1e293b' }}>最高音 (高い順)</option>
+                <option value="highestNoteAsc" style={{ background: '#1e293b' }}>最高音 (低い順)</option>
+                <option value="artistAsc" style={{ background: '#1e293b' }}>アーティスト名</option>
+                <option value="titleAsc" style={{ background: '#1e293b' }}>曲名</option>
+              </select>
+            </div>
 
-          <button
-            className="glass-panel"
-            title="ログアウト"
-            style={{ padding: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}
-            onClick={() => signOut()}
-          >
-            <LogOut size={16} />
-          </button>
-
-          <button
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              background: 'linear-gradient(135deg, var(--primary-color), var(--secondary-color))',
-              color: '#fff',
-              padding: '0.6rem 1.2rem',
-              borderRadius: 'var(--radius-md)',
-              fontWeight: 600,
-              boxShadow: '0 4px 6px rgba(56, 189, 248, 0.2)'
-            }}
-            onClick={() => setIsSearchOpen(true)}
-          >
-            <Plus size={18} />
-            <span>楽曲追加</span>
-          </button>
+            <button
+              onClick={() => {
+                if (visibleSongs.length === 0) return;
+                const random = visibleSongs[Math.floor(Math.random() * visibleSongs.length)];
+                handleSongClick(random);
+              }}
+              style={{
+                background: '#ef4444',
+                color: 'white',
+                padding: '0.5rem 1rem',
+                borderRadius: 'var(--radius-md)',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                display: 'flex', alignItems: 'center', gap: '0.5rem',
+                boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)'
+              }}
+            >
+              <div style={{ fontSize: '1.2rem' }}>🎲</div>
+              ランダム選曲
+            </button>
+          </div>
         </div>
       </header>
 
