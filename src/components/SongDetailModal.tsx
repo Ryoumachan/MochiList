@@ -1,0 +1,237 @@
+import { useState, useEffect } from 'react';
+import { X, Save, Globe, Trash2 } from 'lucide-react';
+import type { Song } from '../types';
+import { openRangeSearch } from '../utils/scraper';
+
+interface SongDetailModalProps {
+    isOpen: boolean;
+    song: Partial<Song> | Song | null;
+    onClose: () => void;
+    onSave: (song: Partial<Song>) => void;
+    onDelete?: (id: string) => void;
+}
+
+export function SongDetailModal({ isOpen, song, onClose, onSave, onDelete }: SongDetailModalProps) {
+    const [formData, setFormData] = useState<Partial<Song>>({});
+
+    useEffect(() => {
+        if (song) {
+            setFormData({ ...song });
+        }
+    }, [song]);
+
+    if (!isOpen || !song) return null;
+
+    const handleChange = (field: keyof Song, value: any) => {
+        setFormData(prev => ({ ...prev, [field]: value }));
+    };
+
+    const handleAutoFetch = () => {
+        // Fallback to google search as per plan
+        if (formData.artist && formData.title) {
+            openRangeSearch(formData.artist, formData.title);
+        } else {
+            alert("タイトルとアーティスト名を入力してください");
+        }
+    };
+
+    const isEditing = !!formData.id;
+
+    return (
+        <div style={{
+            position: 'fixed', inset: 0, zIndex: 1100,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: 'rgba(0,0,0,0.7)',
+            backdropFilter: 'blur(4px)'
+        }}>
+            <div className="glass-panel" style={{ width: '90%', maxWidth: '600px', maxHeight: '90vh', overflowY: 'auto', background: '#0f172a', display: 'flex', flexDirection: 'column' }}>
+
+                {/* Header */}
+                <div style={{ padding: '1rem', borderBottom: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h2 style={{ fontSize: '1.2rem', fontWeight: 600 }}>
+                        {isEditing ? '楽曲詳細・編集' : '新規登録'}
+                    </h2>
+                    <button onClick={onClose}><X size={24} color={'var(--text-secondary)'} /></button>
+                </div>
+
+                {/* content */}
+                <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+
+                    {/* Basic Info */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: '1rem' }}>
+                        {formData.artworkUrl && (
+                            <img src={formData.artworkUrl} alt="Cover" style={{ width: 80, height: 80, borderRadius: 8, objectFit: 'cover' }} />
+                        )}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%' }}>
+                            <input
+                                className="input-premium"
+                                placeholder="曲名"
+                                value={formData.title || ''}
+                                onChange={e => handleChange('title', e.target.value)}
+                                style={{ fontSize: '1.1rem', fontWeight: 'bold' }}
+                            />
+                            <input
+                                className="input-premium"
+                                placeholder="アーティスト名"
+                                value={formData.artist || ''}
+                                onChange={e => handleChange('artist', e.target.value)}
+                            />
+                        </div>
+                    </div>
+
+                    <hr style={{ borderColor: 'var(--glass-border)', opacity: 0.3 }} />
+
+                    {/* Vocal Range Section */}
+                    <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                            <h3 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px' }}>音域情報</h3>
+                            <button
+                                onClick={handleAutoFetch}
+                                style={{ fontSize: '0.8rem', color: 'var(--primary-color)', display: 'flex', alignItems: 'center', gap: '4px' }}
+                            >
+                                <Globe size={14} />
+                                <span>Web検索で調べる</span>
+                            </button>
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                            <label className="field-label">
+                                <span>最高音 (地声)</span>
+                                <input
+                                    className="input-premium" placeholder="例: hiA"
+                                    value={formData.highestChestNote || ''}
+                                    onChange={e => handleChange('highestChestNote', e.target.value)}
+                                />
+                            </label>
+                            <label className="field-label">
+                                <span>最高音 (裏声込み)</span>
+                                <input
+                                    className="input-premium" placeholder="例: hiC"
+                                    value={formData.highestNote || ''}
+                                    onChange={e => handleChange('highestNote', e.target.value)}
+                                />
+                            </label>
+                            <label className="field-label">
+                                <span>最低音</span>
+                                <input
+                                    className="input-premium" placeholder="例: lowG"
+                                    value={formData.lowestNote || ''}
+                                    onChange={e => handleChange('lowestNote', e.target.value)}
+                                />
+                            </label>
+                            <label className="field-label">
+                                <span>原曲キー</span>
+                                <input
+                                    className="input-premium" placeholder="例: C, +2"
+                                    value={formData.originalKey || ''}
+                                    onChange={e => handleChange('originalKey', e.target.value)}
+                                />
+                            </label>
+                        </div>
+                    </div>
+
+                    {/* My Key & Memo */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1rem' }}>
+                        <label className="field-label">
+                            <span>Myキー設定</span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                <button
+                                    onClick={() => handleChange('myKeyShift', (formData.myKeyShift || 0) - 1)}
+                                    style={{ width: 30, height: 30, background: 'rgba(255,255,255,0.1)', borderRadius: 4 }}
+                                >-</button>
+                                <input
+                                    type="number"
+                                    className="input-premium"
+                                    style={{ textAlign: 'center' }}
+                                    value={formData.myKeyShift || 0}
+                                    onChange={e => handleChange('myKeyShift', parseInt(e.target.value) || 0)}
+                                />
+                                <button
+                                    onClick={() => handleChange('myKeyShift', (formData.myKeyShift || 0) + 1)}
+                                    style={{ width: 30, height: 30, background: 'rgba(255,255,255,0.1)', borderRadius: 4 }}
+                                >+</button>
+                            </div>
+                        </label>
+                        <label className="field-label">
+                            <span>タグ/ジャンル (メモ)</span>
+                            <input
+                                className="input-premium"
+                                value={formData.album || ''} // Using album field as secondary info/tag for now or just generic
+                                placeholder="ロック, バラード..."
+                                onChange={e => handleChange('album', e.target.value)}
+                            />
+                        </label>
+                    </div>
+
+                    <label className="field-label">
+                        <span>メモ (200文字以内)</span>
+                        <textarea
+                            className="input-premium"
+                            rows={3}
+                            placeholder="歌唱時のポイントなど"
+                            value={formData.memo || ''}
+                            onChange={e => handleChange('memo', e.target.value)}
+                            style={{ resize: 'none' }}
+                        />
+                    </label>
+
+                </div>
+
+                {/* Footer */}
+                <div style={{ padding: '1rem', borderTop: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between' }}>
+                    {isEditing && onDelete ? (
+                        <button
+                            onClick={() => {
+                                if (window.confirm('削除しますか？')) onDelete(formData.id!);
+                            }}
+                            style={{ color: 'var(--error-color)', display: 'flex', gap: '0.5rem', alignItems: 'center' }}
+                        >
+                            <Trash2 size={18} />
+                            削除
+                        </button>
+                    ) : <div />}
+
+                    <button
+                        onClick={() => onSave(formData)}
+                        style={{
+                            background: 'var(--primary-color)',
+                            color: 'white',
+                            padding: '0.75rem 2rem',
+                            borderRadius: 'var(--radius-md)',
+                            fontWeight: 600,
+                            display: 'flex', alignItems: 'center', gap: '0.5rem'
+                        }}
+                    >
+                        <Save size={18} />
+                        保存
+                    </button>
+                </div>
+            </div>
+
+            <style>{`
+        .input-premium {
+          width: 100%;
+          background: rgba(0, 0, 0, 0.2);
+          border: 1px solid var(--glass-border);
+          padding: 0.6rem;
+          border-radius: var(--radius-sm);
+          color: white;
+          outline: none;
+        }
+        .input-premium:focus {
+          border-color: var(--primary-color);
+          background: rgba(0, 0, 0, 0.4);
+        }
+        .field-label {
+          display: flex;
+          flex-direction: column;
+          gap: 0.4rem;
+        }
+        .field-label span {
+          font-size: 0.8rem;
+          color: var(--text-secondary);
+        }
+      `}</style>
+        </div>
+    );
+}
