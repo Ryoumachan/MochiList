@@ -142,6 +142,56 @@ export function useSongs() {
         ));
     };
 
+    const updateSongs = async (updates: { id: string, data: Partial<Song> }[]) => {
+        if (!user || updates.length === 0) return; // Changed 'profile' to 'user'
+
+        // Supabase doesn't support bulk update with different values easily in one query
+        // usually requires upsert.
+        // For simplicity/safety, we'll loop or use upsert if we reshape data.
+        // Let's use Promise.all for now - purely client side waiting.
+
+        // Better: map to upsert format
+        const upsertData = updates.map(u => {
+            // Map camelCase to snake_case for Supabase
+            const dbData: any = {
+                id: u.id,
+                user_id: user?.id, // Ensure RLS safety
+                updated_at: new Date().toISOString()
+            };
+            if (u.data.title !== undefined) dbData.title = u.data.title;
+            if (u.data.artist !== undefined) dbData.artist = u.data.artist;
+            if (u.data.album !== undefined) dbData.album = u.data.album;
+            if (u.data.artworkUrl !== undefined) dbData.artwork_url = u.data.artworkUrl;
+            if (u.data.lyricsSnippet !== undefined) dbData.lyrics_snippet = u.data.lyricsSnippet;
+            if (u.data.originalKey !== undefined) dbData.original_key = u.data.originalKey;
+            if (u.data.highestNote !== undefined) dbData.highest_note = u.data.highestNote;
+            if (u.data.highestChestNote !== undefined) dbData.highest_chest_note = u.data.highestChestNote;
+            if (u.data.lowestNote !== undefined) dbData.lowest_note = u.data.lowestNote;
+            if (u.data.myKeyShift !== undefined) dbData.my_key_shift = u.data.myKeyShift;
+            if (u.data.memo !== undefined) dbData.memo = u.data.memo;
+            return dbData;
+        });
+
+        const { error } = await supabase
+            .from('songs')
+            .upsert(upsertData);
+
+        if (error) {
+            console.error('Batch update failed:', error);
+            // Fallback to sequential if upsert fails? No, just alert.
+            return;
+        }
+
+        // Optimistic update
+        setSongs(prev => {
+            const updateMap = new Map(updates.map(u => [u.id, { ...u.data, updatedAt: new Date().toISOString() }]));
+            return prev.map(s => {
+                const up = updateMap.get(s.id);
+                return up ? { ...s, ...up } : s;
+            });
+        });
+    };
+
     const deleteSong = async (id: string) => {
         if (!user) return;
 
@@ -192,6 +242,7 @@ export function useSongs() {
         songs,
         addSong,
         updateSong,
+        updateSongs,
         deleteSong,
         isLoading,
         getSortedSongs
