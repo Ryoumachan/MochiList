@@ -1,5 +1,5 @@
-import { useState, useMemo, useEffect } from 'react';
-import { Plus, ArrowUpDown, LogOut, Loader2, Search, Wand2, Music2, Play, ChevronDown, ChevronUp } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { Plus, ArrowUpDown, LogOut, Loader2, Search, ChevronDown, ChevronUp, CheckSquare, Square } from 'lucide-react';
 import { useSongs } from './hooks/useSongs';
 import { SongList } from './components/SongList';
 import { SongSearchModal } from './components/SongSearchModal';
@@ -9,24 +9,41 @@ import { useAuth } from './context/AuthContext';
 import { calculateBestShift, generateNoteOptions } from './utils/musicTheory';
 import type { Song, SortOption } from './types';
 
+// Sort category (without direction)
+type SortCategory = 'added' | 'keyShift' | 'highestNote' | 'artist' | 'title';
+
 function App() {
   const { user, loading, signOut } = useAuth();
   const { songs, addSong, updateSong, updateSongs, deleteSong, getSortedSongs, isLoading: isDataLoading } = useSongs();
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [editingSong, setEditingSong] = useState<Partial<Song> | null>(null);
-  const [sortOption, setSortOption] = useState<SortOption>('addedDesc');
+
+  // New Sort State: category + direction
+  const [sortCategory, setSortCategory] = useState<SortCategory>('added');
+  const [sortAsc, setSortAsc] = useState(false); // false = descending, true = ascending
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
 
   // Batch & User Settings
-  // Default to mid2A if not set, or hiA
   const [userHighestNote, setUserHighestNote] = useState(() => localStorage.getItem('userHighestNote') || 'hiA');
   const [selectedSongIds, setSelectedSongIds] = useState<Set<string>>(new Set());
   const [isBatchAnalyzing, setIsBatchAnalyzing] = useState(false);
+  const [batchProgress, setBatchProgress] = useState('');
 
   const noteOptions = useMemo(() => generateNoteOptions(), []);
 
-  // getSortedSongs returns a new array, so we memorize it to avoid re-sort on every render if not needed
+  // Convert category + direction to SortOption
+  const sortOption: SortOption = useMemo(() => {
+    switch (sortCategory) {
+      case 'added': return sortAsc ? 'addedAsc' : 'addedDesc';
+      case 'keyShift': return sortAsc ? 'keyShiftAsc' : 'keyShiftDesc';
+      case 'highestNote': return sortAsc ? 'highestNoteAsc' : 'highestNoteDesc';
+      case 'artist': return 'artistAsc'; // Artist is always ascending (A-Z)
+      case 'title': return 'titleAsc';   // Title is always ascending (A-Z)
+      default: return 'addedDesc';
+    }
+  }, [sortCategory, sortAsc]);
+
   const visibleSongs = useMemo(() => getSortedSongs(sortOption), [songs, sortOption, getSortedSongs]);
 
   if (loading) {
@@ -80,7 +97,23 @@ function App() {
     localStorage.setItem('userHighestNote', note);
   };
 
-  // --- Batch Operations ---
+  const handleSortCategoryChange = (cat: SortCategory) => {
+    if (cat === sortCategory) {
+      // Toggle direction if same category
+      setSortAsc(!sortAsc);
+    } else {
+      setSortCategory(cat);
+      // Default direction for new category
+      setSortAsc(cat === 'artist' || cat === 'title'); // A-Z for text, newest first for others
+    }
+    setIsSortMenuOpen(false);
+  };
+
+  const handleToggleSortDirection = () => {
+    setSortAsc(!sortAsc);
+  };
+
+  // --- Selection Operations ---
 
   const handleToggleSelect = (id: string) => {
     const newSet = new Set(selectedSongIds);
@@ -89,8 +122,15 @@ function App() {
     setSelectedSongIds(newSet);
   };
 
-  // handleSelectAll is unused in UI currently but good to keep or remove if lint cares.
-  // const handleSelectAll = () => { ... }
+  const handleSelectAll = () => {
+    if (selectedSongIds.size === visibleSongs.length) {
+      setSelectedSongIds(new Set());
+    } else {
+      setSelectedSongIds(new Set(visibleSongs.map(s => s.id)));
+    }
+  };
+
+  // --- Batch Operations ---
 
   const handleBatchAutoFetch = async () => {
     const targets = songs.filter(s => !s.highestNote);
@@ -103,14 +143,21 @@ function App() {
 
     setIsBatchAnalyzing(true);
     const updates: { id: string, data: Partial<Song> }[] = [];
+    let notFoundCount = 0;
 
-    for (const song of targets) {
+    for (let i = 0; i < targets.length; i++) {
+      const song = targets[i];
+      setBatchProgress(`処理中: ${song.title} (${i + 1}/${targets.length})`);
+
       try {
         const query = `${song.title} ${song.artist}`;
-        const res = await fetch(`/api/proxy?mode=analyze&q=${encodeURIComponent(query)}`);
+        // Use analyze2 mode for targeted site scraping
+        const res = await fetch(`/api/proxy?mode=analyze2&q=${encodeURIComponent(query)}`);
         if (res.ok) {
           const data = await res.json();
-          if (data.highestNote || data.lowestNote) {
+          if (data.notFound) {
+            notFoundCount++;
+          } else if (data.highestNote || data.lowestNote) {
             updates.push({
               id: song.id,
               data: {
@@ -121,18 +168,24 @@ function App() {
             });
           }
         }
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, 700));
       } catch (e) {
         console.error(`Failed to fetch for ${song.title}`, e);
       }
     }
 
+    setBatchProgress('');
+
     if (updates.length > 0) {
       await updateSongs(updates);
-      alert(`${updates.length}件の情報を更新しました！(Source: Yahoo)`);
-    } else {
-      alert('新しい情報は取得できませんでした。');
     }
+
+    let msg = '';
+    if (updates.length > 0) msg += `${updates.length}件の情報を更新しました。`;
+    if (notFoundCount > 0) msg += `\n${notFoundCount}件は該当データが見つかりませんでした。手動で入力してください。`;
+    if (updates.length === 0 && notFoundCount === 0) msg = '新しい情報は取得できませんでした。';
+
+    alert(msg);
     setIsBatchAnalyzing(false);
   };
 
@@ -148,7 +201,6 @@ function App() {
       return;
     }
 
-    // Confirmation
     if (!window.confirm(`${targets.length}件の曲について、最高音が「${userHighestNote}」に合うようにキーを自動調整しますか？`)) return;
 
     const updates: { id: string, data: Partial<Song> }[] = [];
@@ -173,6 +225,17 @@ function App() {
       setSelectedSongIds(new Set());
     } else {
       alert('調整可能な曲がありませんでした。(音域情報が不足している可能性があります)');
+    }
+  };
+
+  // --- Sort Label ---
+  const sortCategoryLabel = (cat: SortCategory) => {
+    switch (cat) {
+      case 'added': return '追加日';
+      case 'keyShift': return 'キー変化量';
+      case 'highestNote': return '最高音';
+      case 'artist': return '歌手名';
+      case 'title': return '曲名';
     }
   };
 
@@ -307,46 +370,78 @@ function App() {
           </div>
 
         </div>
-      </header>
 
-      {/* Sort Tools (Minimal) */}
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'white' }}>
-          <ArrowUpDown size={28} />
-          <div style={{ display: 'flex', gap: '0.5rem', fontSize: '1.5rem', fontWeight: 'bold' }}>
-            <span>{sortOption === 'addedDesc' ? '順' : sortConfigLabel(sortOption).replace(/.*\((.*)\)/, '$1')}</span>
-            <button
-              onClick={() => setIsSortMenuOpen(!isSortMenuOpen)}
-              style={{ background: 'none', border: 'none', color: 'white', fontSize: '1.5rem', fontWeight: 'bold', cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: '4px' }}
-            >
-              {sortConfigLabel(sortOption)}
-            </button>
-          </div>
-        </div>
-        {isSortMenuOpen && (
-          <div style={{
-            position: 'absolute', background: '#1e293b', border: '1px solid var(--glass-border)',
-            borderRadius: '12px', padding: '0.5rem', zIndex: 100,
-            marginTop: '40px',
-            boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
-          }}>
-            {[
-              { k: 'addedDesc', l: '登録日 (新しい)' },
-              { k: 'addedAsc', l: '登録日 (古い)' },
-              { k: 'keyShiftDesc', l: 'Myキー (変化大)' },
-              { k: 'highestNoteDesc', l: '最高音 (高い)' },
-              { k: 'artistAsc', l: '歌手名' },
-              { k: 'titleAsc', l: '曲名' },
-            ].map(opt => (
-              <div key={opt.k}
-                onClick={() => { setSortOption(opt.k as any); setIsSortMenuOpen(false); }}
-                style={{ padding: '12px 20px', color: 'white', cursor: 'pointer', fontSize: '1rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}
-              >
-                {opt.l}
-              </div>
-            ))}
+        {/* Batch Progress */}
+        {batchProgress && (
+          <div style={{ marginTop: '1rem', padding: '0.5rem 1rem', background: 'rgba(56, 189, 248, 0.2)', borderRadius: '8px', textAlign: 'center', fontSize: '0.9rem' }}>
+            {batchProgress}
           </div>
         )}
+      </header>
+
+      {/* Sort Tools & Select All */}
+      <div style={{
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        marginBottom: '1.5rem', padding: '0 0.5rem', flexWrap: 'wrap', gap: '0.5rem'
+      }}>
+        {/* Select All */}
+        <button
+          onClick={handleSelectAll}
+          style={{
+            background: 'transparent', border: 'none', color: 'white',
+            display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer',
+            fontSize: '0.9rem'
+          }}
+        >
+          {selectedSongIds.size === visibleSongs.length && visibleSongs.length > 0
+            ? <CheckSquare size={20} />
+            : <Square size={20} />
+          }
+          全選択
+        </button>
+
+        {/* Sort Display */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'white', position: 'relative' }}>
+          <ArrowUpDown size={20} />
+          <button
+            onClick={() => setIsSortMenuOpen(!isSortMenuOpen)}
+            style={{ background: 'none', border: 'none', color: 'white', fontSize: '1rem', fontWeight: 'bold', cursor: 'pointer' }}
+          >
+            {sortCategoryLabel(sortCategory)}順
+          </button>
+          <button
+            onClick={handleToggleSortDirection}
+            style={{
+              background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)',
+              borderRadius: '6px', padding: '4px 10px', color: 'white', fontSize: '0.85rem', cursor: 'pointer'
+            }}
+          >
+            {sortAsc ? '昇順' : '降順'}
+          </button>
+
+          {isSortMenuOpen && (
+            <div style={{
+              position: 'absolute', top: '100%', right: 0, marginTop: '8px',
+              background: '#1e293b', border: '1px solid var(--glass-border)',
+              borderRadius: '12px', padding: '0.5rem', zIndex: 100, minWidth: '140px',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
+            }}>
+              {(['added', 'keyShift', 'highestNote', 'artist', 'title'] as SortCategory[]).map(cat => (
+                <div key={cat}
+                  onClick={() => handleSortCategoryChange(cat)}
+                  style={{
+                    padding: '12px 16px', color: cat === sortCategory ? '#38bdf8' : 'white',
+                    cursor: 'pointer', fontSize: '1rem',
+                    borderBottom: '1px solid rgba(255,255,255,0.05)',
+                    fontWeight: cat === sortCategory ? 'bold' : 'normal'
+                  }}
+                >
+                  {sortCategoryLabel(cat)}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       <main>
@@ -388,15 +483,6 @@ function App() {
       />
     </div>
   );
-}
-
-function sortConfigLabel(key: string) {
-  if (key.includes('added')) return '登録順';
-  if (key.includes('key')) return 'Myキー';
-  if (key.includes('note')) return '最高音';
-  if (key.includes('artist')) return '歌手名';
-  if (key.includes('title')) return '曲名';
-  return 'ソート';
 }
 
 export default App;
