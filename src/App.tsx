@@ -89,7 +89,8 @@ function App() {
               style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 padding: '1rem', fontWeight: 600, fontSize: '0.9rem',
-                background: 'rgba(30, 41, 59, 0.5)'
+                background: 'rgba(30, 41, 59, 0.5)',
+                color: 'white'
               }}
             >
               手動登録

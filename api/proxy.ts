@@ -34,7 +34,69 @@ export default async function handler(request: Request) {
         }
     }
 
-    // 2. Search Mode (DuckDuckGo HTML)
+    // 3. Analyze Mode (Extract Vocal Range)
+    if (query && url.searchParams.get('mode') === 'analyze') {
+        try {
+            // Use logic from reference project (my-songkey-manager)
+            const q = `${query} 音域 最高音 地声 最低音`;
+            const searchUrl = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(q)}`;
+
+            const response = await fetch(searchUrl, {
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+                }
+            });
+            const html = await response.text();
+
+            // Helper: Extract Snippets
+            const extractSnippets = (htmlText: string) => {
+                const parts = htmlText.split(/result__snippet/i);
+                const texts = [];
+                for (let i = 1; i < parts.length; i++) {
+                    const after = parts[i].replace(/^[^>]*>/, '');
+                    const end = after.search(/<\/div>/i);
+                    const block = end >= 0 ? after.slice(0, end) : after.slice(0, 300);
+                    const raw = block.replace(/<[^>]+>/g, ' ').replace(/&nbsp;|&amp;|&lt;|&gt;|&quot;|&#\d+;/g, (m) => {
+                        if (/^&#\d+;$/.test(m)) return ' ';
+                        return m === '&amp;' ? '&' : m === '&lt;' ? '<' : m === '&gt;' ? '>' : m === '&quot;' ? '"' : ' ';
+                    });
+                    texts.push(raw.replace(/\s+/g, ' ').trim());
+                }
+                return texts.filter(Boolean).join(' ');
+            };
+
+            // Helper: Parse Vocal Range
+            const parseVocalRange = (text: string) => {
+                const t = (text || '').replace(/\s+/g, ' ');
+                let highest = null, chest = null, lowest = null;
+
+                // Regex from reference
+                const m1 = t.match(/最高音[：:\s]*([^\s、。,、\n<>]{1,20})/);
+                if (m1) highest = m1[1].trim();
+
+                const m2 = t.match(/地声(の)?最高(音)?[：:\s]*([^\s、。,、\n<>]{1,20})/);
+                if (m2) chest = m2[3].trim();
+
+                const m3 = t.match(/最低音[：:\s]*([^\s、。,、\n<>]{1,20})/);
+                if (m3) lowest = m3[1].trim();
+
+                return { highestNote: highest || null, highestChestNote: chest || null, lowestNote: lowest || null };
+            };
+
+            const combinedText = extractSnippets(html);
+            const result = parseVocalRange(combinedText);
+
+            return new Response(JSON.stringify(result), {
+                headers: { 'Content-Type': 'application/json', ...corsHeaders }
+            });
+
+        } catch (e) {
+            console.error(e);
+            return new Response(JSON.stringify({ error: 'Analysis failed' }), { status: 500, headers: corsHeaders });
+        }
+    }
+
+    // 4. Search Mode (DuckDuckGo HTML)
     if (query) {
         try {
             // DuckDuckGo HTML version is easier to scrape than Google

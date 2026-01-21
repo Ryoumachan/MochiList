@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Save, Globe, Trash2 } from 'lucide-react';
+import { X, Save, Trash2, Search, ExternalLink, Loader2 } from 'lucide-react';
 import type { Song } from '../types';
 import { openRangeSearch } from '../utils/scraper';
 
@@ -13,6 +13,7 @@ interface SongDetailModalProps {
 
 export function SongDetailModal({ isOpen, song, onClose, onSave, onDelete }: SongDetailModalProps) {
     const [formData, setFormData] = useState<Partial<Song>>({});
+    const [isAnalyzing, setIsAnalyzing] = useState(false);
 
     useEffect(() => {
         if (song) {
@@ -34,6 +35,45 @@ export function SongDetailModal({ isOpen, song, onClose, onSave, onDelete }: Son
             alert("タイトルとアーティスト名を入力してください");
         }
     };
+
+    const handleAnalyze = async () => {
+        if (!formData.artist || !formData.title) {
+            alert('アーティスト名と曲名を入力してください');
+            return;
+        }
+
+        setIsAnalyzing(true);
+        try {
+            const query = `${formData.title} ${formData.artist}`;
+            const res = await fetch(`/api/proxy?mode=analyze&q=${encodeURIComponent(query)}`);
+            const data = await res.json();
+
+            if (data.highestNote || data.highestChestNote || data.lowestNote) {
+                setFormData(prev => ({
+                    ...prev,
+                    highestNote: data.highestNote || prev.highestNote,
+                    highestChestNote: data.highestChestNote || prev.highestChestNote,
+                    lowestNote: data.lowestNote || prev.lowestNote
+                }));
+                alert('音域情報を自動取得しました！\n誤りがある場合はWeb検索で確認してください。');
+            } else {
+                alert('情報が見つかりませんでした。\nWeb検索を試してみてください。');
+            }
+        } catch (e) {
+            alert('エラーが発生しました');
+        } finally {
+            setIsAnalyzing(false);
+        }
+    };
+
+    const handleRangeSearch = () => {
+        if (formData.artist && formData.title) {
+            openRangeSearch(formData.artist, formData.title);
+        } else {
+            alert('アーティスト名と曲名を入力してください');
+        }
+    };
+
 
     const isEditing = !!formData.id;
 
@@ -63,37 +103,70 @@ export function SongDetailModal({ isOpen, song, onClose, onSave, onDelete }: Son
                             <img src={formData.artworkUrl} alt="Cover" style={{ width: 80, height: 80, borderRadius: 8, objectFit: 'cover' }} />
                         )}
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%' }}>
-                            <input
-                                className="input-premium"
-                                placeholder="曲名"
-                                value={formData.title || ''}
-                                onChange={e => handleChange('title', e.target.value)}
-                                style={{ fontSize: '1.1rem', fontWeight: 'bold' }}
-                            />
-                            <input
-                                className="input-premium"
-                                placeholder="アーティスト名"
-                                value={formData.artist || ''}
-                                onChange={e => handleChange('artist', e.target.value)}
-                            />
+                            <label className="field-label">
+                                <span>曲名</span>
+                                <input
+                                    className="input-premium"
+                                    placeholder="曲名"
+                                    value={formData.title || ''}
+                                    onChange={e => handleChange('title', e.target.value)}
+                                    style={{ fontSize: '1.1rem', fontWeight: 'bold' }}
+                                />
+                            </label>
+                            <label className="field-label">
+                                <span>アーティスト名</span>
+                                <input
+                                    className="input-premium"
+                                    placeholder="アーティスト名"
+                                    value={formData.artist || ''}
+                                    onChange={e => handleChange('artist', e.target.value)}
+                                />
+                            </label>
                         </div>
                     </div>
 
                     <hr style={{ borderColor: 'var(--glass-border)', opacity: 0.3 }} />
 
                     {/* Vocal Range Section */}
-                    <div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                            <h3 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px' }}>音域情報</h3>
-                            <button
-                                onClick={handleAutoFetch}
-                                style={{ fontSize: '0.8rem', color: 'var(--primary-color)', display: 'flex', alignItems: 'center', gap: '4px' }}
-                            >
-                                <Globe size={14} />
-                                <span>Web検索で調べる</span>
-                            </button>
+                    <div style={{ margin: '0', padding: '0', background: 'transparent', borderRadius: 'var(--radius-md)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                            <span style={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                                音域・キー情報
+                            </span>
+                            <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                <button
+                                    type="button"
+                                    onClick={handleAnalyze}
+                                    disabled={isAnalyzing}
+                                    style={{
+                                        fontSize: '0.8rem',
+                                        padding: '0.4rem 0.8rem',
+                                        background: '#ef4444',
+                                        color: 'white',
+                                        borderRadius: '20px',
+                                        display: 'flex', alignItems: 'center', gap: '4px',
+                                        opacity: isAnalyzing ? 0.7 : 1
+                                    }}
+                                >
+                                    {isAnalyzing ? <Loader2 size={14} className="animate-spin" /> : <Search size={14} />}
+                                    自動音域取得
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handleRangeSearch}
+                                    style={{
+                                        fontSize: '0.8rem',
+                                        padding: '0.4rem 0.8rem',
+                                        background: 'rgba(56, 189, 248, 0.1)',
+                                        color: '#38bdf8',
+                                        borderRadius: '20px',
+                                        display: 'flex', alignItems: 'center', gap: '4px'
+                                    }}
+                                >
+                                    <ExternalLink size={14} /> Web検索
+                                </button>
+                            </div>
                         </div>
-
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                             <label className="field-label">
                                 <span>最高音 (地声)</span>
@@ -209,29 +282,29 @@ export function SongDetailModal({ isOpen, song, onClose, onSave, onDelete }: Son
             </div>
 
             <style>{`
-        .input-premium {
-          width: 100%;
-          background: rgba(0, 0, 0, 0.2);
-          border: 1px solid var(--glass-border);
-          padding: 0.6rem;
-          border-radius: var(--radius-sm);
-          color: white;
-          outline: none;
-        }
-        .input-premium:focus {
-          border-color: var(--primary-color);
-          background: rgba(0, 0, 0, 0.4);
-        }
-        .field-label {
-          display: flex;
-          flex-direction: column;
-          gap: 0.4rem;
-        }
-        .field-label span {
-          font-size: 0.8rem;
-          color: var(--text-secondary);
-        }
-      `}</style>
+         .input-premium {
+           width: 100%;
+           background: rgba(0, 0, 0, 0.2);
+           border: 1px solid var(--glass-border);
+           padding: 0.6rem;
+           border-radius: var(--radius-sm);
+           color: white;
+           outline: none;
+         }
+         .input-premium:focus {
+           border-color: var(--primary-color);
+           background: rgba(0, 0, 0, 0.4);
+         }
+         .field-label {
+           display: flex;
+           flex-direction: column;
+           gap: 0.4rem;
+         }
+         .field-label span {
+           font-size: 0.8rem;
+           color: var(--text-secondary);
+         }
+       `}</style>
         </div>
     );
 }
