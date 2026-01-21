@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="ja" prefix="og: https://ogp.me/ns#">
+<head>
+<meta charset="UTF-8">
+  <meta name="viewport" content="width=1280, maximum-scale=1, user-scalable=yes">
+<link rel="alternate" type="application/rss+xml" title="J-POP 音域の沼 RSS Feed" href="https://vocal-range.com/feed" />
+<link rel="pingback" href="https://vocal-range.com/xmlrpc.php" />
+<meta name="description" content="(2019/02/11)初投稿(2019/02/21)※１）(2019/03/23)最高音最低音以外の音階について(補足①)(補足②)で追記しました。解説記事でもその点について少し言及しております。(2020/01/27)mid2E～mid" />
+<meta name="keywords" content="米津玄師" />
+<!-- OGP -->
+<meta property="og:type" content="article">
+<meta property="og:description" content="(2019/02/11)初投稿(2019/02/21)※１）(2019/03/23)最高音最低音以外の音階について(補足①)(補足②)で追記しました。解説記事でもその点について少し言及しております。(2020/01/27)mid2E～mid">
+<meta property="og:title" content="『Lemon』(米津玄師)の音域と所感【加筆】">
+<meta property="og:url" content="https://vocal-range.com/archives/15453226.html">
+<meta property="og:image" content="https://vocal-range.com/wp-content/uploads/1613/54/Lemon』米津玄師.png">
+<meta property="og:site_name" content="J-POP 音域の沼">
+<meta property="og:locale" content="ja_JP">
+<!-- /OGP -->
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:description" content="(2019/02/11)初投稿(2019/02/21)※１）(2019/03/23)最高音最低音以外の音階について(補足①)(補足②)で追記しました。解説記事でもその点について少し言及しております。(2020/01/27)mid2E～mid">
+<meta name="twitter:title" content="『Lemon』(米津玄師)の音域と所感【加筆】">
+<meta name="twitter:url" content="https://vocal-range.com/archives/15453226.html">
+<meta name="twitter:image" content="https://vocal-range.com/wp-content/uploads/1613/54/Lemon』米津玄師.png">
+<meta name="twitter:domain" content="vocal-range.com">
+<!-- /Twitter Card -->
+
+<title>『Lemon』(米津玄師)の音域と所感【加筆】 - J-POP 音域の沼</title>
+
+		<!-- All in One SEO 4.9.3 - aioseo.com -->
+	<meta name="description" content="(2019/02/11)初投稿(2019/02/21)※１）(2019/03/23)最高音最低音以外の音階につ" />
+	<meta name="robots" content="max-image-preview:large" />
+	<meta name="author" content="vocal_range"/>
+	<link rel="canonical" href="https://vocal-range.com/archives/15453226.html" />
+	<meta name="generator" content="All in One SEO (AIOSEO) 4.9.3" />
+
+		<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XYKKJEBK8V"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-XYKKJEBK8V');
+</script>
+		<meta property="og:locale" content="ja_JP" />
+		<meta property="og:site_name" content="J-POP 音域の沼 - J-POPなど歌メロの音域を調査🎤カラオケなどにおススメ" />
+		<meta property="og:type" content="article" />
+		<meta property="og:title" content="『Lemon』(米津玄師)の音域と所感【加筆】 - J-POP 音域の沼" />
+		<meta property="og:description" content="(2019/02/11)初投稿(2019/02/21)※１）(2019/03/23)最高音最低音以外の音階につ" />
+		<meta property="og:url" content="https://vocal-range.com/archives/15453226.html" />
+		<meta property="og:image" content="https://vocal-range.com/wp-content/uploads/1613/54/Lemon』米津玄師.png" />
+		<meta property="og:image:secure_url" content="https://vocal-range.com/wp-content/uploads/1613/54/Lemon』米津玄師.png" />
+		<meta property="og:image:width" content="842" />
+		<meta property="og:image:height" content="302" />
+		<meta property="article:published_time" content="2020-01-26T18:30:47+00:00" />
+		<meta property="article:modified_time" content="2021-06-06T08:56:51+00:00" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content="『Lemon』(米津玄師)の音域と所感【加筆】 - J-POP 音域の沼" />
+		<meta name="twitter:description" content="(2019/02/11)初投稿(2019/02/21)※１）(2019/03/23)最高音最低音以外の音階につ" />
+		<meta name="twitter:image" content="https://vocal-range.com/wp-content/uploads/1613/54/Lemon』米津玄師.png" />
+		<script type="application/ld+json" class="aioseo-schema">
+			{"@context":"https:\/\/schema.org","@graph":[{"@type":"BlogPosting","@id":"https:\/\/vocal-range.com\/archives\/15453226.html#blogposting","name":"\u300eLemon\u300f(\u7c73\u6d25\u7384\u5e2b)\u306e\u97f3\u57df\u3068\u6240\u611f\u3010\u52a0\u7b46\u3011 - J-POP \u97f3\u57df\u306e\u6cbc","headline":"\u300eLemon\u300f(\u7c73\u6d25\u7384\u5e2b)\u306e\u97f3\u57df\u3068\u6240\u611f\u3010\u52a0\u7b46\u3011","author":{"@id":"https:\/\/vocal-range.com\/archives\/author\/vocal_range#author"},"publisher":{"@id":"https:\/\/vocal-range.com\/#organization"},"image":{"@type":"ImageObject","url":"https:\/\/vocal-range.com\/wp-content\/uploads\/1613\/54\/Lemon\u300f\u7c73\u6d25\u7384\u5e2b.png","width":842,"height":302},"datePublished":"2020-01-27T03:30:47+09:00","dateModified":"2021-06-06T17:56:51+09:00","inLanguage":"ja","mainEntityOfPage":{"@id":"https:\/\/vocal-range.com\/archives\/15453226.html#webpage"},"isPartOf":{"@id":"https:\/\/vocal-range.com\/archives\/15453226.html#webpage"},"articleSection":"\u7c73\u6d25\u7384\u5e2b"},{"@type":"BreadcrumbList","@id":"https:\/\/vocal-range.com\/archives\/15453226.html#breadcrumblist","itemListElement":[{"@type":"ListItem","@id":"https:\/\/vocal-range.com#listItem","position":1,"name":"\u30db\u30fc\u30e0","item":"https:\/\/vocal-range.com","nextItem":{"@type":"ListItem","@id":"https:\/\/vocal-range.com\/archives\/category\/%e7%b1%b3%e6%b4%a5%e7%8e%84%e5%b8%ab#listItem","name":"\u7c73\u6d25\u7384\u5e2b"}},{"@type":"ListItem","@id":"https:\/\/vocal-range.com\/archives\/category\/%e7%b1%b3%e6%b4%a5%e7%8e%84%e5%b8%ab#listItem","position":2,"name":"\u7c73\u6d25\u7384\u5e2b","item":"https:\/\/vocal-range.com\/archives\/category\/%e7%b1%b3%e6%b4%a5%e7%8e%84%e5%b8%ab","nextItem":{"@type":"ListItem","@id":"https:\/\/vocal-range.com\/archives\/15453226.html#listItem","name":"\u300eLemon\u300f(\u7c73\u6d25\u7384\u5e2b)\u306e\u97f3\u57df\u3068\u6240\u611f\u3010\u52a0\u7b46\u3011"},"previousItem":{"@type":"ListItem","@id":"https:\/\/vocal-range.com#listItem","name":"\u30db\u30fc\u30e0"}},{"@type":"ListItem","@id":"https:\/\/vocal-range.com\/archives\/15453226.html#listItem","position":3,"name":"\u300eLemon\u300f(\u7c73\u6d25\u7384\u5e2b)\u306e\u97f3\u57df\u3068\u6240\u611f\u3010\u52a0\u7b46\u3011","previousItem":{"@type":"ListItem","@id":"https:\/\/vocal-range.com\/archives\/category\/%e7%b1%b3%e6%b4%a5%e7%8e%84%e5%b8%ab#listItem","name":"\u7c73\u6d25\u7384\u5e2b"}}]},{"@type":"Organization","@id":"https:\/\/vocal-range.com\/#organization","name":"J-POP \u97f3\u57df\u306e\u6cbc","description":"J-POP\u306a\u3069\u6b4c\u30e1\u30ed\u306e\u97f3\u57df\u3092\u8abf\u67fb\ud83c\udfa4\u30ab\u30e9\u30aa\u30b1\u306a\u3069\u306b\u304a\u30b9\u30b9\u30e1","url":"https:\/\/vocal-range.com\/","logo":{"@type":"ImageObject","url":"https:\/\/vocal-range.com\/wp-content\/uploads\/2021\/02\/\u30a2\u30a4\u30b3\u30f3\u5b8c\u6210a.png","@id":"https:\/\/vocal-range.com\/archives\/15453226.html\/#organizationLogo","width":380,"height":345},"image":{"@id":"https:\/\/vocal-range.com\/archives\/15453226.html\/#organizationLogo"}},{"@type":"Person","@id":"https:\/\/vocal-range.com\/archives\/author\/vocal_range#author","url":"https:\/\/vocal-range.com\/archives\/author\/vocal_range","name":"vocal_range"},{"@type":"WebPage","@id":"https:\/\/vocal-range.com\/archives\/15453226.html#webpage","url":"https:\/\/vocal-range.com\/archives\/15453226.html","name":"\u300eLemon\u300f(\u7c73\u6d25\u7384\u5e2b)\u306e\u97f3\u57df\u3068\u6240\u611f\u3010\u52a0\u7b46\u3011 - J-POP \u97f3\u57df\u306e\u6cbc","description":"(2019\/02\/11)\u521d\u6295\u7a3f(2019\/02\/21)\u203b\uff11\uff09(2019\/03\/23)\u6700\u9ad8\u97f3\u6700\u4f4e\u97f3\u4ee5\u5916\u306e\u97f3\u968e\u306b\u3064","inLanguage":"ja","isPartOf":{"@id":"https:\/\/vocal-range.com\/#website"},"breadcrumb":{"@id":"https:\/\/vocal-range.com\/archives\/15453226.html#breadcrumblist"},"author":{"@id":"https:\/\/vocal-range.com\/archives\/author\/vocal_range#author"},"creator":{"@id":"https:\/\/vocal-range.com\/archives\/author\/vocal_range#author"},"image":{"@type":"ImageObject","url":"https:\/\/vocal-range.com\/wp-content\/uploads\/1613\/54\/Lemon\u300f\u7c73\u6d25\u7384\u5e2b.png","@id":"https:\/\/vocal-range.com\/archives\/15453226.html\/#mainImage","width":842,"height":302},"primaryImageOfPage":{"@id":"https:\/\/vocal-range.com\/archives\/15453226.html#mainImage"},"datePublished":"2020-01-27T03:30:47+09:00","dateModified":"2021-06-06T17:56:51+09:00"},{"@type":"WebSite","@id":"https:\/\/vocal-range.com\/#website","url":"https:\/\/vocal-range.com\/","name":"J-POP \u97f3\u57df\u306e\u6cbc","description":"J-POP\u306a\u3069\u6b4c\u30e1\u30ed\u306e\u97f3\u57df\u3092\u8abf\u67fb\ud83c\udfa4\u30ab\u30e9\u30aa\u30b1\u306a\u3069\u306b\u304a\u30b9\u30b9\u30e1","inLanguage":"ja","publisher":{"@id":"https:\/\/vocal-range.com\/#organization"}}]}
+		</script>
+		<!-- All in One SEO -->
+
+<link rel='dns-prefetch' href='//www.google.com' />
+<link rel='dns-prefetch' href='//cdn.jsdelivr.net' />
+<link rel='dns-prefetch' href='//stats.wp.com' />
+<link rel="alternate" type="application/rss+xml" title="J-POP 音域の沼 &raquo; フィード" href="https://vocal-range.com/feed" />
+<link rel="alternate" type="application/rss+xml" title="J-POP 音域の沼 &raquo; コメントフィード" href="https://vocal-range.com/comments/feed" />
+<link rel="alternate" type="application/rss+xml" title="J-POP 音域の沼 &raquo; 『Lemon』(米津玄師)の音域と所感【加筆】 のコメントのフィード" href="https://vocal-range.com/archives/15453226.html/feed" />
+<link rel="alternate" title="oEmbed (JSON)" type="application/json+oembed" href="https://vocal-range.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fvocal-range.com%2Farchives%2F15453226.html" />
+<link rel="alternate" title="oEmbed (XML)" type="text/xml+oembed" href="https://vocal-range.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fvocal-range.com%2Farchives%2F15453226.html&#038;format=xml" />
+<style id='wp-img-auto-sizes-contain-inline-css' type='text/css'>
+img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
+/*# sourceURL=wp-img-auto-sizes-contain-inline-css */
+</style>
+<link rel='stylesheet' id='simplicity-style-css' href='https://vocal-range.com/wp-content/themes/simplicity2/style.css?ver=6.9&#038;fver=20210211093502' type='text/css' media='all' />
+<link rel='stylesheet' id='responsive-style-css' href='https://vocal-range.com/wp-content/themes/simplicity2/css/responsive-pc.css?ver=6.9&#038;fver=20210211093502' type='text/css' media='all' />
+<link rel='stylesheet' id='skin-style-css' href='https://vocal-range.com/wp-content/themes/simplicity2/skins/green-pop/style.css?ver=6.9&#038;fver=20210211093502' type='text/css' media='all' />
+<link rel='stylesheet' id='font-awesome-style-css' href='https://vocal-range.com/wp-content/themes/simplicity2/webfonts/css/font-awesome.min.css?ver=6.9&#038;fver=20210211093502' type='text/css' media='all' />
+<link rel='stylesheet' id='icomoon-style-css' href='https://vocal-range.com/wp-content/themes/simplicity2/webfonts/icomoon/style.css?ver=6.9&#038;fver=20210211093502' type='text/css' media='all' />
+<link rel='stylesheet' id='extension-style-css' href='https://vocal-range.com/wp-content/themes/simplicity2/css/extension.css?ver=6.9&#038;fver=20210211093502' type='text/css' media='all' />
+<style id='extension-style-inline-css' type='text/css'>
+@media screen and (max-width:639px){.article br{display:block}}
+/*# sourceURL=extension-style-inline-css */
+</style>
+<link rel='stylesheet' id='print-style-css' href='https://vocal-range.com/wp-content/themes/simplicity2/css/print.css?ver=6.9&#038;fver=20210211093502' type='text/css' media='print' />
+<link rel='stylesheet' id='sns-twitter-type-style-css' href='https://vocal-range.com/wp-content/themes/simplicity2/css/sns-twitter-type.css?ver=6.9&#038;fver=20210211093502' type='text/css' media='all' />
+<style id='wp-emoji-styles-inline-css' type='text/css'>
+
+	img.wp-smiley, img.emoji {
+		display: inline !important;
+		border: none !important;
+		box-shadow: none !important;
+		height: 1em !important;
+		width: 1em !important;
+		margin: 0 0.07em !important;
+		vertical-align: -0.1em !important;
+		background: none !important;
+		padding: 0 !important;
+	}
+/*# sourceURL=wp-emoji-styles-inline-css */
+</style>
+<style id='wp-block-library-inline-css' type='text/css'>
+:root{--wp-block-synced-color:#7a00df;--wp-block-synced-color--rgb:122,0,223;--wp-bound-block-color:var(--wp-block-synced-color);--wp-editor-canvas-background:#ddd;--wp-admin-theme-color:#007cba;--wp-admin-theme-color--rgb:0,124,186;--wp-admin-theme-color-darker-10:#006ba1;--wp-admin-theme-color-darker-10--rgb:0,107,160.5;--wp-admin-theme-color-darker-20:#005a87;--wp-admin-theme-color-darker-20--rgb:0,90,135;--wp-admin-border-width-focus:2px}@media (min-resolution:192dpi){:root{--wp-admin-border-width-focus:1.5px}}.wp-element-button{cursor:pointer}:root .has-very-light-gray-background-color{background-color:#eee}:root .has-very-dark-gray-background-color{background-color:#313131}:root .has-very-light-gray-color{color:#eee}:root .has-very-dark-gray-color{color:#313131}:root .has-vivid-green-cyan-to-vivid-cyan-blue-gradient-background{background:linear-gradient(135deg,#00d084,#0693e3)}:root .has-purple-crush-gradient-background{background:linear-gradient(135deg,#34e2e4,#4721fb 50%,#ab1dfe)}:root .has-hazy-dawn-gradient-background{background:linear-gradient(135deg,#faaca8,#dad0ec)}:root .has-subdued-olive-gradient-background{background:linear-gradient(135deg,#fafae1,#67a671)}:root .has-atomic-cream-gradient-background{background:linear-gradient(135deg,#fdd79a,#004a59)}:root .has-nightshade-gradient-background{background:linear-gradient(135deg,#330968,#31cdcf)}:root .has-midnight-gradient-background{background:linear-gradient(135deg,#020381,#2874fc)}:root{--wp--preset--font-size--normal:16px;--wp--preset--font-size--huge:42px}.has-regular-font-size{font-size:1em}.has-larger-font-size{font-size:2.625em}.has-normal-font-size{font-size:var(--wp--preset--font-size--normal)}.has-huge-font-size{font-size:var(--wp--preset--font-size--huge)}.has-text-align-center{text-align:center}.has-text-align-left{text-align:left}.has-text-align-right{text-align:right}.has-fit-text{white-space:nowrap!important}#end-resizable-editor-section{display:none}.aligncenter{clear:both}.items-justified-left{justify-content:flex-start}.items-justified-center{justify-content:center}.items-justified-right{justify-content:flex-end}.items-justified-space-between{justify-content:space-between}.screen-reader-text{border:0;clip-path:inset(50%);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px;word-wrap:normal!important}.screen-reader-text:focus{background-color:#ddd;clip-path:none;color:#444;display:block;font-size:1em;height:auto;left:5px;line-height:normal;padding:15px 23px 14px;text-decoration:none;top:5px;width:auto;z-index:100000}html :where(.has-border-color){border-style:solid}html :where([style*=border-top-color]){border-top-style:solid}html :where([style*=border-right-color]){border-right-style:solid}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style:solid}html :where([style*=border-width]){border-style:solid}html :where([style*=border-top-width]){border-top-style:solid}html :where([style*=border-right-width]){border-right-style:solid}html :where([style*=border-bottom-width]){border-bottom-style:solid}html :where([style*=border-left-width]){border-left-style:solid}html :where(img[class*=wp-image-]){height:auto;max-width:100%}:where(figure){margin:0 0 1em}html :where(.is-position-sticky){--wp-admin--admin-bar--position-offset:var(--wp-admin--admin-bar--height,0px)}@media screen and (max-width:600px){html :where(.is-position-sticky){--wp-admin--admin-bar--position-offset:0px}}
+
+/*# sourceURL=wp-block-library-inline-css */
+</style><style id='global-styles-inline-css' type='text/css'>
+:root{--wp--preset--aspect-ratio--square: 1;--wp--preset--aspect-ratio--4-3: 4/3;--wp--preset--aspect-ratio--3-4: 3/4;--wp--preset--aspect-ratio--3-2: 3/2;--wp--preset--aspect-ratio--2-3: 2/3;--wp--preset--aspect-ratio--16-9: 16/9;--wp--preset--aspect-ratio--9-16: 9/16;--wp--preset--color--black: #000000;--wp--preset--color--cyan-bluish-gray: #abb8c3;--wp--preset--color--white: #ffffff;--wp--preset--color--pale-pink: #f78da7;--wp--preset--color--vivid-red: #cf2e2e;--wp--preset--color--luminous-vivid-orange: #ff6900;--wp--preset--color--luminous-vivid-amber: #fcb900;--wp--preset--color--light-green-cyan: #7bdcb5;--wp--preset--color--vivid-green-cyan: #00d084;--wp--preset--color--pale-cyan-blue: #8ed1fc;--wp--preset--color--vivid-cyan-blue: #0693e3;--wp--preset--color--vivid-purple: #9b51e0;--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(135deg,rgb(6,147,227) 0%,rgb(155,81,224) 100%);--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(135deg,rgb(122,220,180) 0%,rgb(0,208,130) 100%);--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(135deg,rgb(252,185,0) 0%,rgb(255,105,0) 100%);--wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(135deg,rgb(255,105,0) 0%,rgb(207,46,46) 100%);--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(135deg,rgb(238,238,238) 0%,rgb(169,184,195) 100%);--wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(135deg,rgb(74,234,220) 0%,rgb(151,120,209) 20%,rgb(207,42,186) 40%,rgb(238,44,130) 60%,rgb(251,105,98) 80%,rgb(254,248,76) 100%);--wp--preset--gradient--blush-light-purple: linear-gradient(135deg,rgb(255,206,236) 0%,rgb(152,150,240) 100%);--wp--preset--gradient--blush-bordeaux: linear-gradient(135deg,rgb(254,205,165) 0%,rgb(254,45,45) 50%,rgb(107,0,62) 100%);--wp--preset--gradient--luminous-dusk: linear-gradient(135deg,rgb(255,203,112) 0%,rgb(199,81,192) 50%,rgb(65,88,208) 100%);--wp--preset--gradient--pale-ocean: linear-gradient(135deg,rgb(255,245,203) 0%,rgb(182,227,212) 50%,rgb(51,167,181) 100%);--wp--preset--gradient--electric-grass: linear-gradient(135deg,rgb(202,248,128) 0%,rgb(113,206,126) 100%);--wp--preset--gradient--midnight: linear-gradient(135deg,rgb(2,3,129) 0%,rgb(40,116,252) 100%);--wp--preset--font-size--small: 13px;--wp--preset--font-size--medium: 20px;--wp--preset--font-size--large: 36px;--wp--preset--font-size--x-large: 42px;--wp--preset--spacing--20: 0.44rem;--wp--preset--spacing--30: 0.67rem;--wp--preset--spacing--40: 1rem;--wp--preset--spacing--50: 1.5rem;--wp--preset--spacing--60: 2.25rem;--wp--preset--spacing--70: 3.38rem;--wp--preset--spacing--80: 5.06rem;--wp--preset--shadow--natural: 6px 6px 9px rgba(0, 0, 0, 0.2);--wp--preset--shadow--deep: 12px 12px 50px rgba(0, 0, 0, 0.4);--wp--preset--shadow--sharp: 6px 6px 0px rgba(0, 0, 0, 0.2);--wp--preset--shadow--outlined: 6px 6px 0px -3px rgb(255, 255, 255), 6px 6px rgb(0, 0, 0);--wp--preset--shadow--crisp: 6px 6px 0px rgb(0, 0, 0);}:where(.is-layout-flex){gap: 0.5em;}:where(.is-layout-grid){gap: 0.5em;}body .is-layout-flex{display: flex;}.is-layout-flex{flex-wrap: wrap;align-items: center;}.is-layout-flex > :is(*, div){margin: 0;}body .is-layout-grid{display: grid;}.is-layout-grid > :is(*, div){margin: 0;}:where(.wp-block-columns.is-layout-flex){gap: 2em;}:where(.wp-block-columns.is-layout-grid){gap: 2em;}:where(.wp-block-post-template.is-layout-flex){gap: 1.25em;}:where(.wp-block-post-template.is-layout-grid){gap: 1.25em;}.has-black-color{color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-color{color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-color{color: var(--wp--preset--color--white) !important;}.has-pale-pink-color{color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-color{color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-color{color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-color{color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-color{color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-color{color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-color{color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-color{color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-color{color: var(--wp--preset--color--vivid-purple) !important;}.has-black-background-color{background-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-background-color{background-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-background-color{background-color: var(--wp--preset--color--white) !important;}.has-pale-pink-background-color{background-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-background-color{background-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-background-color{background-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-background-color{background-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-background-color{background-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-background-color{background-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-background-color{background-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-background-color{background-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-background-color{background-color: var(--wp--preset--color--vivid-purple) !important;}.has-black-border-color{border-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-border-color{border-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-border-color{border-color: var(--wp--preset--color--white) !important;}.has-pale-pink-border-color{border-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-border-color{border-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-border-color{border-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-border-color{border-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-border-color{border-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-border-color{border-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-border-color{border-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-border-color{border-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-border-color{border-color: var(--wp--preset--color--vivid-purple) !important;}.has-vivid-cyan-blue-to-vivid-purple-gradient-background{background: var(--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple) !important;}.has-light-green-cyan-to-vivid-green-cyan-gradient-background{background: var(--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan) !important;}.has-luminous-vivid-amber-to-luminous-vivid-orange-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange) !important;}.has-luminous-vivid-orange-to-vivid-red-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-orange-to-vivid-red) !important;}.has-very-light-gray-to-cyan-bluish-gray-gradient-background{background: var(--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray) !important;}.has-cool-to-warm-spectrum-gradient-background{background: var(--wp--preset--gradient--cool-to-warm-spectrum) !important;}.has-blush-light-purple-gradient-background{background: var(--wp--preset--gradient--blush-light-purple) !important;}.has-blush-bordeaux-gradient-background{background: var(--wp--preset--gradient--blush-bordeaux) !important;}.has-luminous-dusk-gradient-background{background: var(--wp--preset--gradient--luminous-dusk) !important;}.has-pale-ocean-gradient-background{background: var(--wp--preset--gradient--pale-ocean) !important;}.has-electric-grass-gradient-background{background: var(--wp--preset--gradient--electric-grass) !important;}.has-midnight-gradient-background{background: var(--wp--preset--gradient--midnight) !important;}.has-small-font-size{font-size: var(--wp--preset--font-size--small) !important;}.has-medium-font-size{font-size: var(--wp--preset--font-size--medium) !important;}.has-large-font-size{font-size: var(--wp--preset--font-size--large) !important;}.has-x-large-font-size{font-size: var(--wp--preset--font-size--x-large) !important;}
+/*# sourceURL=global-styles-inline-css */
+</style>
+
+<style id='classic-theme-styles-inline-css' type='text/css'>
+/*! This file is auto-generated */
+.wp-block-button__link{color:#fff;background-color:#32373c;border-radius:9999px;box-shadow:none;text-decoration:none;padding:calc(.667em + 2px) calc(1.333em + 2px);font-size:1.125em}.wp-block-file__button{background:#32373c;color:#fff;text-decoration:none}
+/*# sourceURL=/wp-includes/css/classic-themes.min.css */
+</style>
+<link rel='stylesheet' id='contact-form-7-css' href='https://vocal-range.com/wp-content/plugins/contact-form-7/includes/css/styles.css?ver=6.1.4&#038;fver=20251201013011' type='text/css' media='all' />
+<script type="text/javascript" src="https://vocal-range.com/wp-includes/js/jquery/jquery.min.js?ver=3.7.1" id="jquery-core-js"></script>
+<script type="text/javascript" src="https://vocal-range.com/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.4.1" id="jquery-migrate-js"></script>
+<link rel='shortlink' href='https://vocal-range.com/?p=388' />
+<!-- Clickfuse Meta Tags -->
+	<meta property="cf:artist" content="米津玄師" />
+	<meta property="cf:song" content="Lemon" />
+	<meta property="cf:genre" content="" />
+	<meta property="cf:tv_term" content="" />
+	<meta property="cf:album" content="" />
+	<meta property="cf:album_is" content="false" />
+	<!-- /Clickfuse Meta Tags -->
+		<style>img#wpstats{display:none}</style>
+		<style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style><link rel="icon" href="https://vocal-range.com/wp-content/uploads/2023/07/cropped-アイコン完成a-32x32.png" sizes="32x32" />
+<link rel="icon" href="https://vocal-range.com/wp-content/uploads/2023/07/cropped-アイコン完成a-192x192.png" sizes="192x192" />
+<link rel="apple-touch-icon" href="https://vocal-range.com/wp-content/uploads/2023/07/cropped-アイコン完成a-180x180.png" />
+<meta name="msapplication-TileImage" content="https://vocal-range.com/wp-content/uploads/2023/07/cropped-アイコン完成a-270x270.png" />
+</head>
+  <body class="wp-singular post-template-default single single-post postid-388 single-format-standard wp-theme-simplicity2 categoryid-3" itemscope itemtype="https://schema.org/WebPage">
+    <div id="container">
+
+      <!-- header -->
+      <header itemscope itemtype="https://schema.org/WPHeader">
+        <div id="header" class="clearfix">
+          <div id="header-in">
+
+                        <div id="h-top">
+              <!-- モバイルメニュー表示用のボタン -->
+<div id="mobile-menu">
+  <a id="mobile-menu-toggle" href="#"><span class="fa fa-bars fa-2x"></span></a>
+</div>
+
+              <div class="alignleft top-title-catchphrase">
+                <!-- サイトのタイトル -->
+<p id="site-title" itemscope itemtype="https://schema.org/Organization">
+  <a href="https://vocal-range.com/">J-POP 音域の沼</a></p>
+<!-- サイトの概要 -->
+<p id="site-description">
+  J-POPなど歌メロの音域を調査&#x1f3a4;カラオケなどにおススメ</p>
+              </div>
+
+              <div class="alignright top-sns-follows">
+                                <!-- SNSページ -->
+<div class="sns-pages">
+<p class="sns-follow-msg">フォローする</p>
+<ul class="snsp">
+<li class="feedly-page"><a href="//feedly.com/i/discover/sources/search/feed/https%3A%2F%2Fvocal-range.com" target="blank" title="feedlyで更新情報を購読" rel="nofollow"><span class="icon-feedly-logo"></span></a></li><li class="rss-page"><a href="https://vocal-range.com/feed" target="_blank" title="RSSで更新情報をフォロー" rel="nofollow"><span class="icon-rss-logo"></span></a></li>  </ul>
+</div>
+                              </div>
+
+            </div><!-- /#h-top -->
+          </div><!-- /#header-in -->
+        </div><!-- /#header -->
+      </header>
+
+      <!-- Navigation -->
+<nav itemscope itemtype="https://schema.org/SiteNavigationElement">
+  <div id="navi">
+      	<div id="navi-in">
+      <div class="menu-%e3%81%93%e3%82%8c%e3%81%be%e3%81%a7%e8%aa%bf%e6%9f%bb%e3%81%97%e3%81%9f%e3%82%a2%e3%83%bc%e3%83%86%e3%82%a3%e3%82%b9%e3%83%88%e4%b8%80%e8%a6%a7-container"><ul id="menu-%e3%81%93%e3%82%8c%e3%81%be%e3%81%a7%e8%aa%bf%e6%9f%bb%e3%81%97%e3%81%9f%e3%82%a2%e3%83%bc%e3%83%86%e3%82%a3%e3%82%b9%e3%83%88%e4%b8%80%e8%a6%a7" class="menu"><li id="menu-item-1679" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-1679"><a href="https://vocal-range.com/archives/21358105.html">これまで音域を調査したアーティスト一覧　</a></li>
+</ul></div>    </div><!-- /#navi-in -->
+  </div><!-- /#navi -->
+</nav>
+<!-- /Navigation -->
+      <!-- 本体部分 -->
+      <div id="body">
+        <div id="body-in" class="cf">
+
+          
+          <!-- main -->
+          <main itemscope itemprop="mainContentOfPage">
+            <div id="main" itemscope itemtype="https://schema.org/Blog">
+      <div id="pc_ad-6" class="widget-over-breadcrumbs widget_pc_ad">      <div class="ad-space ad-widget">
+        <div class="ad-label"></div>
+        <div class="ad-responsive ad-pc adsense-336"><script data-ad-client="ca-pub-5831338782897120" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script></div>
+      </div>
+      </div>          
+  <div id="breadcrumb" class="breadcrumb breadcrumb-categor" itemscope itemtype="https://schema.org/BreadcrumbList"><div class="breadcrumb-home" itemscope itemtype="https://schema.org/ListItem" itemprop="itemListElement"><span class="fa fa-home fa-fw" aria-hidden="true"></span><a href="https://vocal-range.com" itemprop="item"><span itemprop="name">ホーム</span></a><meta itemprop="position" content="1" /><span class="sp"><span class="fa fa-angle-right" aria-hidden="true"></span></span></div><div class="breadcrumb-item" itemscope itemtype="https://schema.org/ListItem" itemprop="itemListElement"><span class="fa fa-folder fa-fw" aria-hidden="true"></span><a href="https://vocal-range.com/archives/category/%e7%b1%b3%e6%b4%a5%e7%8e%84%e5%b8%ab" itemprop="item"><span itemprop="name">米津玄師</span></a><meta itemprop="position" content="2" /></div></div><!-- /#breadcrumb -->  <div id="post-388" class="post-388 post type-post status-publish format-standard has-post-thumbnail hentry category-3">
+  <article class="article">
+  
+      <div id="search-5" class="widget-over-articletitle widget_search"><form method="get" id="searchform" action="https://vocal-range.com/">
+	<input type="text" placeholder="ブログ内を検索" name="s" id="s">
+	<input type="submit" id="searchsubmit" value="">
+</form></div><div id="categories-5" class="widget-over-articletitle widget_categories"><div class="widget-over-article-title main-widget-label">カテゴリー</div><form action="https://vocal-range.com" method="get"><label class="screen-reader-text" for="cat">カテゴリー</label><select  name='cat' id='cat' class='postform'>
+	<option value='-1'>カテゴリーを選択</option>
+	<option class="level-0" value="46">調査したアーティスト一覧&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="313">アニメ関連&nbsp;&nbsp;(546)</option>
+	<option class="level-0" value="168">キーが低めの男性曲&nbsp;&nbsp;(25)</option>
+	<option class="level-0" value="8">ボカロ作品&nbsp;&nbsp;(59)</option>
+	<option class="level-0" value="1">未分類&nbsp;&nbsp;(430)</option>
+	<option class="level-0" value="21">aiko&nbsp;&nbsp;(13)</option>
+	<option class="level-0" value="4">あいみょん&nbsp;&nbsp;(43)</option>
+	<option class="level-0" value="875">青山吉能&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="56">秋山黄色&nbsp;&nbsp;(8)</option>
+	<option class="level-0" value="755">Aqua Timez&nbsp;&nbsp;(5)</option>
+	<option class="level-0" value="373">ASIAN KUNG-FU GENERATION&nbsp;&nbsp;(13)</option>
+	<option class="level-0" value="358">Acid Black Cherry&nbsp;&nbsp;(7)</option>
+	<option class="level-0" value="896">asmi&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="62">Ado&nbsp;&nbsp;(28)</option>
+	<option class="level-0" value="910">ano&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="724">amazarashi&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="438">Ayase[YOASOBI]&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="57">嵐&nbsp;&nbsp;(6)</option>
+	<option class="level-0" value="23">[ALEXANDROS]&nbsp;&nbsp;(23)</option>
+	<option class="level-0" value="31">andymori&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="669">家入レオ&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="688">THE YELLOW MONKEY&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="315">いきものがかり&nbsp;&nbsp;(9)</option>
+	<option class="level-0" value="573">幾田りら[YOASOBI]&nbsp;&nbsp;(6)</option>
+	<option class="level-0" value="617">稲葉浩志[B&#8217;z]&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="52">Eve&nbsp;&nbsp;(35)</option>
+	<option class="level-0" value="655">imase&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="28">indigo la End&nbsp;&nbsp;(8)</option>
+	<option class="level-0" value="40">UVERworld&nbsp;&nbsp;(41)</option>
+	<option class="level-0" value="409">宇多田ヒカル&nbsp;&nbsp;(7)</option>
+	<option class="level-0" value="48">Uru&nbsp;&nbsp;(5)</option>
+	<option class="level-0" value="819">ウルフルズ&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="853">HY&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="53">X JAPAN&nbsp;&nbsp;(13)</option>
+	<option class="level-0" value="551">Ed Sheeran&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="921">Every Little Thing&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="17">Aimer&nbsp;&nbsp;(14)</option>
+	<option class="level-0" value="506">ELLEGARDEN&nbsp;&nbsp;(10)</option>
+	<option class="level-0" value="314">エレファントカシマシ&nbsp;&nbsp;(7)</option>
+	<option class="level-0" value="620">オーイシマサヨシ&nbsp;&nbsp;(5)</option>
+	<option class="level-0" value="335">THE ORAL CIGARETTES&nbsp;&nbsp;(10)</option>
+	<option class="level-0" value="708">尾崎豊&nbsp;&nbsp;(6)</option>
+	<option class="level-0" value="775">小野正利&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="29">Official髭男dism&nbsp;&nbsp;(77)</option>
+	<option class="level-0" value="741">Omoinotake&nbsp;&nbsp;(7)</option>
+	<option class="level-0" value="727">ORANGE RANGE&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="718">GARNET CROW&nbsp;&nbsp;(5)</option>
+	<option class="level-0" value="501">かいりきベア&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="428">KANA-BOON&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="607">Kanaria&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="448">上白石萌音&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="629">神はサイコロを振らない&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="863">川崎鷹也&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="771">きただにひろし&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="652">キタニタツヤ&nbsp;&nbsp;(9)</option>
+	<option class="level-0" value="557">キリンジ&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="32">King Gnu&nbsp;&nbsp;(34)</option>
+	<option class="level-0" value="776">キンモクセイ&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="885">久保田利伸&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="464">Creepy Nuts&nbsp;&nbsp;(9)</option>
+	<option class="level-0" value="49">クリープハイプ&nbsp;&nbsp;(23)</option>
+	<option class="level-0" value="387">GReeeeN&nbsp;&nbsp;(10)</option>
+	<option class="level-0" value="302">くるり&nbsp;&nbsp;(5)</option>
+	<option class="level-0" value="44">GLAY&nbsp;&nbsp;(17)</option>
+	<option class="level-0" value="667">桑田佳祐&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="556">結束バンド&nbsp;&nbsp;(19)</option>
+	<option class="level-0" value="757">KERENMI[蔦谷好位置]&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="538">go!go!vanillas&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="862">ゴールデンボンバー&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="461">Co shu Nie&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="826">こっちのけんと&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="325">コブクロ&nbsp;&nbsp;(5)</option>
+	<option class="level-0" value="858">Conton Candy&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="457">サイダーガール&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="879">斉藤和義&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="45">Saucy Dog&nbsp;&nbsp;(21)</option>
+	<option class="level-0" value="7">サカナクション&nbsp;&nbsp;(25)</option>
+	<option class="level-0" value="683">サザンオールスターズ&nbsp;&nbsp;(7)</option>
+	<option class="level-0" value="43">さユり&nbsp;&nbsp;(12)</option>
+	<option class="level-0" value="685">サンボマスター&nbsp;&nbsp;(6)</option>
+	<option class="level-0" value="392">C&amp;K&nbsp;&nbsp;(5)</option>
+	<option class="level-0" value="352">SHE&#8217;S&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="22">椎名林檎&nbsp;&nbsp;(12)</option>
+	<option class="level-0" value="884">Chevon&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="924">SHISHAMO&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="533">シド&nbsp;&nbsp;(5)</option>
+	<option class="level-0" value="455">清水翔太&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="50">Janne Da Arc&nbsp;&nbsp;(7)</option>
+	<option class="level-0" value="855">JUDY AND MARY&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="615">女王蜂&nbsp;&nbsp;(5)</option>
+	<option class="level-0" value="905">湘南乃風&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="820">シンガーズハイ&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="754">-真天地開闢集団- ジグザグ&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="371">SUPER BEAVER&nbsp;&nbsp;(9)</option>
+	<option class="level-0" value="27">Superfly&nbsp;&nbsp;(5)</option>
+	<option class="level-0" value="11">スキマスイッチ&nbsp;&nbsp;(12)</option>
+	<option class="level-0" value="185">須田景凪【バルーン】&nbsp;&nbsp;(6)</option>
+	<option class="level-0" value="16">菅田将暉&nbsp;&nbsp;(14)</option>
+	<option class="level-0" value="35">ずっと真夜中でいいのに。&nbsp;&nbsp;(24)</option>
+	<option class="level-0" value="635">SPYAIR&nbsp;&nbsp;(6)</option>
+	<option class="level-0" value="10">スピッツ&nbsp;&nbsp;(27)</option>
+	<option class="level-0" value="19">sumika&nbsp;&nbsp;(14)</option>
+	<option class="level-0" value="54">SEKAI NO OWARI&nbsp;&nbsp;(22)</option>
+	<option class="level-0" value="191">Da-iCE&nbsp;&nbsp;(9)</option>
+	<option class="level-0" value="478">Tani Yuuki&nbsp;&nbsp;(9)</option>
+	<option class="level-0" value="733">玉置浩二&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="674">CHAGE and ASKA&nbsp;&nbsp;(6)</option>
+	<option class="level-0" value="881">ちゃんみな&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="795">TUBE&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="864">チューリップ&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="837">tuki.&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="763">ツミキ&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="493">ツユ&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="895">TM NETWORK&nbsp;&nbsp;(1)</option>
+	<option class="level-0" value="679">T.M.Revolution[西川貴教]&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="502">DISH//&nbsp;&nbsp;(6)</option>
+	<option class="level-0" value="51">テイラー・スウィフト[TAYLOR_SWIFT]&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="759">DIR EN GREY&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="531">DECO*27&nbsp;&nbsp;(5)</option>
+	<option class="level-0" value="553">10-FEET&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="787">東京事変&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="552">東京スカパラダイスオーケストラ&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="769">DOES&nbsp;&nbsp;(5)</option>
+	<option class="level-0" value="822">徳永英明&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="888">トゲナシトゲアリ&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="569">DREAMS COME TRUE&nbsp;&nbsp;(7)</option>
+	<option class="level-0" value="651">中島みゆき&nbsp;&nbsp;(6)</option>
+	<option class="level-0" value="41">夏代孝明&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="774">なとり&nbsp;&nbsp;(6)</option>
+	<option class="level-0" value="899">ナナヲアカリ&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="233">NICO Touches the Walls&nbsp;&nbsp;(6)</option>
+	<option class="level-0" value="786">西野カナ&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="732">Nissy(西島隆弘)&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="656">ねぐせ。&nbsp;&nbsp;(6)</option>
+	<option class="level-0" value="916">乃紫&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="39">Novelbright&nbsp;&nbsp;(12)</option>
+	<option class="level-0" value="382">乃木坂46&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="805">HYDE&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="311">Vaundy&nbsp;&nbsp;(28)</option>
+	<option class="level-0" value="26">秦基博&nbsp;&nbsp;(10)</option>
+	<option class="level-0" value="738">ハチP&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="14">back number&nbsp;&nbsp;(43)</option>
+	<option class="level-0" value="934">HANA&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="643">早見沙織&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="898">ハルカミライ&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="13">BUMP OF CHICKEN&nbsp;&nbsp;(27)</option>
+	<option class="level-0" value="334">Hump Back&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="828">ハンブレッダーズ&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="25">B&#8217;z&nbsp;&nbsp;(36)</option>
+	<option class="level-0" value="894">BTS&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="918">BE:FIRST&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="696">PEOPLE 1&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="525">羊文学&nbsp;&nbsp;(5)</option>
+	<option class="level-0" value="422">BiSH&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="60">平井堅&nbsp;&nbsp;(11)</option>
+	<option class="level-0" value="462">平井大&nbsp;&nbsp;(5)</option>
+	<option class="level-0" value="440">the pillows&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="38">04 Limited Sazabys&nbsp;&nbsp;(17)</option>
+	<option class="level-0" value="63">福山雅治&nbsp;&nbsp;(5)</option>
+	<option class="level-0" value="304">藤井風&nbsp;&nbsp;(19)</option>
+	<option class="level-0" value="24">フジファブリック&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="463">flumpool&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="47">fripSide&nbsp;&nbsp;(7)</option>
+	<option class="level-0" value="411">BLUE ENCOUNT&nbsp;&nbsp;(9)</option>
+	<option class="level-0" value="824">ブルーノ・マーズ[Bruno Mars]&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="869">THE BLUE HEARTS&nbsp;&nbsp;(2)</option>
+	<option class="level-0" value="418">フレデリック&nbsp;&nbsp;(8)</option>
+	<option class="level-0" value="659">FLOW&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="729">HEY-SMITH&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="781">PENGUIN RESEARCH&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="36">星野源&nbsp;&nbsp;(14)</option>
+	<option class="level-0" value="608">星街すいせい&nbsp;&nbsp;(7)</option>
+	<option class="level-0" value="872">ポルカドットスティングレイ&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="58">ポルノグラフィティ&nbsp;&nbsp;(12)</option>
+	<option class="level-0" value="42">MY FIRST STORY&nbsp;&nbsp;(19)</option>
+	<option class="level-0" value="536">My Hair is Bad&nbsp;&nbsp;(5)</option>
+	<option class="level-0" value="64">マカロニえんぴつ&nbsp;&nbsp;(20)</option>
+	<option class="level-0" value="402">槇原敬之&nbsp;&nbsp;(6)</option>
+	<option class="level-0" value="452">松任谷由実[荒井由実]&nbsp;&nbsp;(5)</option>
+	<option class="level-0" value="316">まふまふ&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="697">マルシィ&nbsp;&nbsp;(6)</option>
+	<option class="level-0" value="393">MAN WITH A MISSION&nbsp;&nbsp;(5)</option>
+	<option class="level-0" value="882">MISIA&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="507">三浦大知&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="521">みきとP&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="15">Mr.Children&nbsp;&nbsp;(37)</option>
+	<option class="level-0" value="30">Mrs. GREEN APPLE&nbsp;&nbsp;(70)</option>
+	<option class="level-0" value="34">美波&nbsp;&nbsp;(5)</option>
+	<option class="level-0" value="55">宮本浩次(エレファントカシマシ)&nbsp;&nbsp;(8)</option>
+	<option class="level-0" value="430">milet&nbsp;&nbsp;(8)</option>
+	<option class="level-0" value="609">millennium parade&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="740">miwa&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="377">ヤバイTシャツ屋さん&nbsp;&nbsp;(12)</option>
+	<option class="level-0" value="537">yama&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="891">YUI&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="401">優里&nbsp;&nbsp;(17)</option>
+	<option class="level-0" value="61">ゆず&nbsp;&nbsp;(14)</option>
+	<option class="level-0" value="18">UNISON SQUARE GARDEN&nbsp;&nbsp;(20)</option>
+	<option class="level-0" value="59">YOASOBI&nbsp;&nbsp;(20)</option>
+	<option class="level-0" value="3">米津玄師&nbsp;&nbsp;(62)</option>
+	<option class="level-0" value="20">ヨルシカ&nbsp;&nbsp;(38)</option>
+	<option class="level-0" value="9">RADWIMPS&nbsp;&nbsp;(28)</option>
+	<option class="level-0" value="37">L&#8217;Arc-en-Ciel&nbsp;&nbsp;(17)</option>
+	<option class="level-0" value="817">THE RAMPAGE from EXILE TRIBE&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="952">離婚伝説&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="33">LiSA&nbsp;&nbsp;(13)</option>
+	<option class="level-0" value="294">緑黄色社会&nbsp;&nbsp;(9)</option>
+	<option class="level-0" value="405">凛として時雨(TKソロ含む)&nbsp;&nbsp;(12)</option>
+	<option class="level-0" value="941">LE SSERAFIM&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="605">Reol&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="581">レミオロメン&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="500">ロードオブメジャー&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="954">ロクデナシ&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="845">Wurts&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="12">WANIMA&nbsp;&nbsp;(13)</option>
+	<option class="level-0" value="445">和ぬか&nbsp;&nbsp;(5)</option>
+	<option class="level-0" value="6">ONE OK ROCK&nbsp;&nbsp;(42)</option>
+	<option class="level-0" value="542">WANDS&nbsp;&nbsp;(7)</option>
+	<option class="level-0" value="2">ブログ管理人より&nbsp;&nbsp;(18)</option>
+	<option class="level-0" value="5">加筆予定の記事&nbsp;&nbsp;(7)</option>
+</select>
+</form><script type="text/javascript">
+/* <![CDATA[ */
+
+( ( dropdownId ) => {
+	const dropdown = document.getElementById( dropdownId );
+	function onSelectChange() {
+		setTimeout( () => {
+			if ( 'escape' === dropdown.dataset.lastkey ) {
+				return;
+			}
+			if ( dropdown.value && parseInt( dropdown.value ) > 0 && dropdown instanceof HTMLSelectElement ) {
+				dropdown.parentElement.submit();
+			}
+		}, 250 );
+	}
+	function onKeyUp( event ) {
+		if ( 'Escape' === event.key ) {
+			dropdown.dataset.lastkey = 'escape';
+		} else {
+			delete dropdown.dataset.lastkey;
+		}
+	}
+	function onClick() {
+		delete dropdown.dataset.lastkey;
+	}
+	dropdown.addEventListener( 'keyup', onKeyUp );
+	dropdown.addEventListener( 'click', onClick );
+	dropdown.addEventListener( 'change', onSelectChange );
+})( "cat" );
+
+//# sourceURL=WP_Widget_Categories%3A%3Awidget
+/* ]]> */
+</script>
+</div>  
+  <header>
+    <h1 class="entry-title">『Lemon』(米津玄師)の音域と所感【加筆】</h1>
+
+
+    
+    <p class="post-meta">
+            <span class="post-date"><span class="fa fa-clock-o fa-fw"></span><time class="entry-date date published" datetime="2020-01-27T03:30:47+09:00">2020/1/27</time></span>
+        <span class="post-update"><span class="fa fa-history fa-fw"></span><span class="entry-date date updated">2021/6/6</span></span>
+  
+      <span class="category"><span class="fa fa-folder fa-fw"></span><a href="https://vocal-range.com/archives/category/%e7%b1%b3%e6%b4%a5%e7%8e%84%e5%b8%ab" rel="category tag">米津玄師</a></span>
+
+      
+      
+      
+      
+      
+    </p>
+
+    
+    
+    
+                <div id="pc_ad-11" class="widget-over-article widget_pc_ad">      <div class="ad-space ad-widget">
+        <div class="ad-label"></div>
+        <div class="ad-responsive ad-pc adsense-336"><script>
+/* TFP - vocal-range.com */
+(function() {
+	var opts = {
+		artist: document.head.querySelector('[property="cf:artist"]').content,
+		song: document.head.querySelector('[property="cf:song"]').content,
+		genre: document.head.querySelector('[property="cf:genre"]').content,
+		tv_term: document.head.querySelector('[property="cf:tv_term"]').content,
+		album: document.head.querySelector('[property="cf:album"]').content,
+		album_is_soundtrack: document.head.querySelector('[property="cf:album_is"]').content,
+		adunit_id: 100003585,
+		div_id: "cf_async_" + Math.floor((Math.random() * 999999999))
+	};
+	document.write('<div id="'+opts.div_id+'"></div>');var c=function(){cf.showAsyncAd(opts)};if(typeof window.cf !== 'undefined')c();else{cf_async=!0;var r=document.createElement("script"),s=document.getElementsByTagName("script")[0];r.async=!0;r.src="//srv.clickfuse.com/showads/showad.js";r.readyState?r.onreadystatechange=function(){if("loaded"==r.readyState||"complete"==r.readyState)r.onreadystatechange=null,c()}:r.onload=c;s.parentNode.insertBefore(r,s)};
+})();
+</script></div>
+      </div>
+      </div>        </header>
+
+  
+  <div id="the-content" class="entry-content">
+  
+<span style="font-family: arial, sans-serif;">(2019/02/11)初投稿<br>(2019/02/21)※１）</span><br><span style="font-family: arial, sans-serif;"><b><span style="color: rgb(8, 0, 0);">(2019/03/23)最高音最低音以外の音階について(補足①)(補足②)で追記しました。解説記事でもその点について少し言及しております。</span><br><span style="color: rgb(8, 0, 0);">(2020/01/27)</span><span style="color: rgb(0, 0, 255);">mid2E</span><span style="color: rgb(8, 0, 0);">～</span><span style="color: rgb(255, 0, 255);">mid2G#

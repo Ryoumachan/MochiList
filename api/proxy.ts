@@ -42,27 +42,58 @@ export default async function handler(req: any, res: any) {
         try {
             const queryRaw = Array.isArray(q) ? q[0] : q;
 
-            // Helper: Parse Vocal Range from text
+            // Helper: Parse Vocal Range from text (updated patterns based on actual site format)
             const parseVocalRange = (text: string) => {
                 const t = (text || '').replace(/\s+/g, ' ');
                 let highest = null, chest = null, lowest = null;
 
-                const notePattern = "([a-zA-Z0-9#]+)";
+                // Note pattern: mid1A, mid2G#, hiB, hihiC, lowG etc.
+                const notePattern = "(mid[12][A-G]#?|hi[A-G]#?|hihi[A-G]#?|low[A-G]#?)";
 
-                const m1 = t.match(new RegExp(`最高音[：:\\s]*${notePattern}`));
-                if (m1) highest = m1[1].trim();
+                // vocal-range.com format: 【地声最低音】 mid1B(B２)
+                // Also match: 地声最低音mid1B, 最低音：mid1B, 最低音 mid1B
+                const lowPatterns = [
+                    new RegExp(`【地声最低音】\\s*${notePattern}`, 'i'),
+                    new RegExp(`地声最低音[：:\\s]*${notePattern}`, 'i'),
+                    new RegExp(`最低音[：:\\s]*${notePattern}`, 'i'),
+                ];
+                for (const p of lowPatterns) {
+                    const m = t.match(p);
+                    if (m) { lowest = m[1]; break; }
+                }
 
-                const m2 = t.match(new RegExp(`地声(?:の)?最高(?:音)?[：:\\s]*${notePattern}`));
-                if (m2) chest = m2[1].trim();
+                // vocal-range.com format: 【地声最高音】 hiB(B4)
+                const chestPatterns = [
+                    new RegExp(`【地声最高音】\\s*${notePattern}`, 'i'),
+                    new RegExp(`地声最高音[：:\\s]*${notePattern}`, 'i'),
+                    new RegExp(`地声の最高音[：:\\s]*${notePattern}`, 'i'),
+                ];
+                for (const p of chestPatterns) {
+                    const m = t.match(p);
+                    if (m) { chest = m[1]; break; }
+                }
 
-                const m3 = t.match(new RegExp(`最低音[：:\\s]*${notePattern}`));
-                if (m3) lowest = m3[1].trim();
+                // vocal-range.com format: 【裏声最高音】 hiB(B4)
+                const highPatterns = [
+                    new RegExp(`【裏声最高音】\\s*${notePattern}`, 'i'),
+                    new RegExp(`裏声最高音[：:\\s]*${notePattern}`, 'i'),
+                    new RegExp(`最高音[：:\\s]*${notePattern}`, 'i'),
+                ];
+                for (const p of highPatterns) {
+                    const m = t.match(p);
+                    if (m) { highest = m[1]; break; }
+                }
+
+                // If no 裏声最高音 found, use 地声最高音 as highest
+                if (!highest && chest) {
+                    highest = chest;
+                }
 
                 return { highestNote: highest || null, highestChestNote: chest || null, lowestNote: lowest || null };
             };
 
             // --- Strategy: Search Yahoo for site:vocal-range.com OR site:w.atwiki.jp/saikouon_dokoda ---
-            const yahooQuery = `${queryRaw} 音域 最高音 (site:vocal-range.com OR site:w.atwiki.jp/saikouon_dokoda)`;
+            const yahooQuery = `${queryRaw} 音域 (site:vocal-range.com OR site:w.atwiki.jp/saikouon_dokoda)`;
             const yahooUrl = `https://search.yahoo.co.jp/search?p=${encodeURIComponent(yahooQuery)}`;
 
             const yahooRes = await fetch(yahooUrl, {
@@ -74,21 +105,73 @@ export default async function handler(req: any, res: any) {
             });
             const yahooHtml = await yahooRes.text();
 
-            // Extract snippets from Yahoo search results
-            const parts = yahooHtml.split(/class="sw-CardBase/);
-            const texts: string[] = [];
-            for (let i = 1; i < parts.length && i < 10; i++) {
-                const raw = parts[i].slice(0, 5000);
-                const text = raw.replace(/<[^>]+>/g, ' ').replace(/&[^;]+;/g, ' ').replace(/\s+/g, ' ').trim();
-                texts.push(text);
-            }
-            const combinedText = texts.join(' || ');
-            const result = parseVocalRange(combinedText);
+            // Try to find a direct link to one of our target sites
+            const vocalRangeMatch = yahooHtml.match(/href="(https?:\/\/vocal-range\.com\/archives\/\d+\.html)"/);
+            const atwikiMatch = yahooHtml.match(/href="(https?:\/\/w\.atwiki\.jp\/saikouon_dokoda\/pages\/\d+\.html)"/);
 
-            if (result.highestNote || result.lowestNote) {
+            let result = null;
+            let source = null;
+
+            // Try vocal-range.com first (more reliable format)
+            if (vocalRangeMatch) {
+                try {
+                    const pageRes = await fetch(vocalRangeMatch[1], {
+                        headers: { 'User-Agent': 'Mozilla/5.0' }
+                    });
+                    if (pageRes.ok) {
+                        const pageHtml = await pageRes.text();
+                        const cleanText = pageHtml
+                            .replace(/<script[\s\S]*?<\/script>/gi, '')
+                            .replace(/<style[\s\S]*?<\/style>/gi, '')
+                            .replace(/<[^>]+>/g, ' ')
+                            .replace(/\s+/g, ' ');
+                        result = parseVocalRange(cleanText);
+                        source = 'vocal-range.com';
+                    }
+                } catch (e) {
+                    console.error('Failed to fetch vocal-range.com page', e);
+                }
+            }
+
+            // Try atwiki if needed
+            if (!result?.highestNote && !result?.lowestNote && atwikiMatch) {
+                try {
+                    const pageRes = await fetch(atwikiMatch[1], {
+                        headers: { 'User-Agent': 'Mozilla/5.0' }
+                    });
+                    if (pageRes.ok) {
+                        const pageHtml = await pageRes.text();
+                        const cleanText = pageHtml
+                            .replace(/<script[\s\S]*?<\/script>/gi, '')
+                            .replace(/<style[\s\S]*?<\/style>/gi, '')
+                            .replace(/<[^>]+>/g, ' ')
+                            .replace(/\s+/g, ' ');
+                        result = parseVocalRange(cleanText);
+                        source = 'w.atwiki.jp';
+                    }
+                } catch (e) {
+                    console.error('Failed to fetch atwiki page', e);
+                }
+            }
+
+            // Fallback: Parse Yahoo search snippets directly
+            if (!result?.highestNote && !result?.lowestNote) {
+                const parts = yahooHtml.split(/class="sw-CardBase/);
+                const texts: string[] = [];
+                for (let i = 1; i < parts.length && i < 10; i++) {
+                    const raw = parts[i].slice(0, 5000);
+                    const text = raw.replace(/<[^>]+>/g, ' ').replace(/&[^;]+;/g, ' ').replace(/\s+/g, ' ').trim();
+                    texts.push(text);
+                }
+                const combinedText = texts.join(' || ');
+                result = parseVocalRange(combinedText);
+                source = 'yahoo-snippet';
+            }
+
+            if (result && (result.highestNote || result.lowestNote)) {
                 res.status(200).json({
                     ...result,
-                    source: 'yahoo'
+                    source
                 });
                 return;
             }
