@@ -1,20 +1,23 @@
 export const config = {
-    runtime: 'nodejs', // Switch to Node.js for better scraping stability
+    runtime: 'nodejs',
 };
 
-export default async function handler(request: Request) {
-    const url = new URL(request.url);
-    const query = url.searchParams.get('q');
-    const targetUrl = url.searchParams.get('url');
+export default async function handler(req: any, res: any) {
+    // Vercel Serverless Function (Node.js) uses (req, res)
+    const { mode, q, url: targetUrl } = req.query;
 
-    const corsHeaders = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type',
+    // CORS headers helper
+    const enableCors = () => {
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     };
 
-    if (request.method === 'OPTIONS') {
-        return new Response(null, { status: 204, headers: corsHeaders });
+    enableCors();
+
+    if (req.method === 'OPTIONS') {
+        res.status(204).end();
+        return;
     }
 
     // 1. Direct URL Fetch Mode
@@ -26,20 +29,21 @@ export default async function handler(request: Request) {
                 }
             });
             const html = await response.text();
-            return new Response(html, {
-                headers: { 'Content-Type': 'text/html', ...corsHeaders }
-            });
+            res.setHeader('Content-Type', 'text/html');
+            res.status(200).send(html);
+            return;
         } catch (e) {
-            return new Response('Error fetching target', { status: 500, headers: corsHeaders });
+            res.status(500).send('Error fetching target');
+            return;
         }
     }
 
     // 3. Analyze Mode (Extract Vocal Range)
-    if (query && url.searchParams.get('mode') === 'analyze') {
+    if (q && mode === 'analyze') {
         try {
-            // Use logic from reference project (my-songkey-manager)
-            const q = `${query} 音域 最高音 地声 最低音`;
-            const searchUrl = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(q)}`;
+            const queryRaw = Array.isArray(q) ? q[0] : q;
+            const query = `${queryRaw} 音域 最高音 地声 最低音`;
+            const searchUrl = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`;
 
             const response = await fetch(searchUrl, {
                 headers: {
@@ -51,7 +55,6 @@ export default async function handler(request: Request) {
             // Helper: Extract Snippets
             const extractSnippets = (htmlText: string) => {
                 const parts = htmlText.split(/result__snippet/i);
-                // DEBUG: Check parts length
                 if (parts.length <= 1) return "";
 
                 const texts = [];
@@ -73,8 +76,6 @@ export default async function handler(request: Request) {
                 const t = (text || '').replace(/\s+/g, ' ');
                 let highest = null, chest = null, lowest = null;
 
-                // Strict Mode: Only match ASCII notes (hiA, mid2G#, etc.)
-                // Excludes Matches containing Japanese/Hiragana/Kanji
                 const notePattern = "([a-zA-Z0-9#+-]+)";
 
                 const m1 = t.match(new RegExp(`最高音[：:\\s]*${notePattern}`));
@@ -92,7 +93,6 @@ export default async function handler(request: Request) {
             const combinedText = extractSnippets(html);
             const result = parseVocalRange(combinedText);
 
-            // Add Debug Metadata
             const payload = {
                 ...result,
                 debug: {
@@ -102,21 +102,21 @@ export default async function handler(request: Request) {
                 }
             };
 
-            return new Response(JSON.stringify(payload), {
-                headers: { 'Content-Type': 'application/json', ...corsHeaders }
-            });
+            res.status(200).json(payload);
+            return;
 
         } catch (e: any) {
             console.error(e);
-            return new Response(JSON.stringify({ error: 'Analysis failed', details: e.message }), { status: 500, headers: corsHeaders });
+            res.status(500).json({ error: 'Analysis failed', details: e.message });
+            return;
         }
     }
 
-    // 4. Search Mode (DuckDuckGo HTML)
-    if (query) {
+    // 4. Search Mode
+    if (q) {
         try {
-            // DuckDuckGo HTML version is easier to scrape than Google
-            const searchUrl = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`;
+            const queryRaw = Array.isArray(q) ? q[0] : q;
+            const searchUrl = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(queryRaw)}`;
             const response = await fetch(searchUrl, {
                 headers: {
                     'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
@@ -124,40 +124,20 @@ export default async function handler(request: Request) {
             });
             const html = await response.text();
 
-            // Simple Regex Parsing for DDG HTML
-            // Structure is usually: <div class="result__body"> ... <a class="result__a" href="...">Title</a> ... <a class="result__snippet" ...>Snippet</a>
-            // Note: Classes might change, but let's try standard structure.
-
             const results = [];
-            const resultRegex = /<div[^>]*class="[^"]*result[^"]*"[^>]*>([\s\S]*?)<\/div>\s*<\/div>\s*<\/div>/g;
-            // Actually DDG HTML structure is table-based or simpler divs.
-            // Let's look for link class="result__a"
 
-            // Matches: <a class="result__a" href="(url)">(title)</a>
-            const linkRegex = /<a[^>]*class="[^"]*result__a[^"]*"[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g;
-
-            // Snippet matches: <a class="result__snippet" ...>(snippet)</a>
-            const snippetRegex = /<a[^>]*class="[^"]*result__snippet[^"]*"[^>]*>([\s\S]*?)<\/a>/g;
-
-            let match;
-            // We will parse naively by just find all links and assume order roughly matches or just extract accessible ones.
-            // Better approach: extract blocks.
-
-            // Let's try splitting by "result__body"
+            // Simple block splitting for DDG HTML
             const blocks = html.split('class="result__body"');
 
             for (let i = 1; i < blocks.length; i++) {
                 const block = blocks[i];
                 const urlMatch = block.match(/href="([^"]+)"/);
-                const titleMatch = block.match(/>([^<]+)<\/a>/); // First link text in body is usually title
+                const titleMatch = block.match(/>([^<]+)<\/a>/);
                 const snippetMatch = block.match(/class="result__snippet"[^>]*>([\s\S]*?)<\/a>/);
 
                 if (urlMatch && titleMatch) {
                     let decodedUrl = urlMatch[1];
-                    // DDG redirects: //duckduckgo.com/l/?kh=-1&uddg=...
                     if (decodedUrl.startsWith('//')) decodedUrl = 'https:' + decodedUrl;
-
-                    // Try to extract real URL from uddg param if present
                     const uMatch = decodedUrl.match(/uddg=([^&]+)/);
                     if (uMatch) {
                         decodedUrl = decodeURIComponent(uMatch[1]);
@@ -172,13 +152,13 @@ export default async function handler(request: Request) {
                 if (results.length >= 5) break;
             }
 
-            return new Response(JSON.stringify(results), {
-                headers: { 'Content-Type': 'application/json', ...corsHeaders }
-            });
+            res.status(200).json(results);
+            return;
         } catch (e) {
-            return new Response(JSON.stringify({ error: 'Search failed' }), { status: 500, headers: corsHeaders });
+            res.status(500).json({ error: 'Search failed' });
+            return;
         }
     }
 
-    return new Response('Missing query', { status: 400, headers: corsHeaders });
+    res.status(400).send('Missing query');
 }
