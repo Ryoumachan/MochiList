@@ -191,7 +191,7 @@ function App() {
 
   const handleBatchAdjustKey = async () => {
     if (!userHighestNote) {
-      alert("my声域を設定してください");
+      alert("my最高音を設定してください");
       return;
     }
 

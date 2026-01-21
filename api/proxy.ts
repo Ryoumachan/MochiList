@@ -37,8 +37,8 @@ export default async function handler(req: any, res: any) {
         }
     }
 
-    // 2. Analyze2 Mode: Targeted Site Scraping (vocal-range.com)
-    if (q && mode === 'analyze2') {
+    // 2. Analyze2 Mode: Targeted Site Scraping (ONLY w.atwiki.jp/saikouon_dokoda and vocal-range.com)
+    if (q && (mode === 'analyze2' || mode === 'analyze')) {
         try {
             const queryRaw = Array.isArray(q) ? q[0] : q;
 
@@ -65,89 +65,91 @@ export default async function handler(req: any, res: any) {
                 return { highestNote: highest || null, highestChestNote: chest || null, lowestNote: lowest || null };
             };
 
-            // --- Strategy 1: Try vocal-range.com via Google search ---
-            // Google search: site:vocal-range.com "曲名"
-            const googleQuery = `site:vocal-range.com ${queryRaw}`;
-            const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(googleQuery)}`;
-
-            const googleRes = await fetch(googleUrl, {
-                headers: {
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                    'Accept': 'text/html,application/xhtml+xml',
-                    'Accept-Language': 'ja,en-US;q=0.9,en;q=0.8'
-                }
-            });
-            const googleHtml = await googleRes.text();
-
-            // Find first vocal-range.com link
-            const linkMatch = googleHtml.match(/href="(https?:\/\/vocal-range\.com\/archives\/\d+\.html)"/);
-
-            if (linkMatch) {
-                const pageUrl = linkMatch[1];
-
-                // Fetch the actual page
-                const pageRes = await fetch(pageUrl, {
-                    headers: {
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                        'Accept': 'text/html',
-                        'Accept-Language': 'ja'
-                    }
-                });
-                const pageHtml = await pageRes.text();
-
-                // Extract text content (simple tag stripping)
-                const textContent = pageHtml
-                    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, ' ')
-                    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, ' ')
-                    .replace(/<[^>]+>/g, ' ')
-                    .replace(/&nbsp;|&amp;|&lt;|&gt;/g, ' ')
-                    .replace(/\s+/g, ' ');
-
-                const result = parseVocalRange(textContent);
-
-                if (result.highestNote || result.lowestNote) {
-                    res.status(200).json({
-                        ...result,
-                        source: 'vocal-range.com',
-                        url: pageUrl
+            // Helper: Fetch and parse a page
+            const fetchAndParse = async (url: string) => {
+                try {
+                    const pageRes = await fetch(url, {
+                        headers: {
+                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                            'Accept': 'text/html',
+                            'Accept-Language': 'ja'
+                        }
                     });
-                    return;
+                    if (!pageRes.ok) return null;
+
+                    const pageHtml = await pageRes.text();
+
+                    // Extract text content (simple tag stripping)
+                    const textContent = pageHtml
+                        .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, ' ')
+                        .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, ' ')
+                        .replace(/<[^>]+>/g, ' ')
+                        .replace(/&nbsp;|&amp;|&lt;|&gt;/g, ' ')
+                        .replace(/\s+/g, ' ');
+
+                    return parseVocalRange(textContent);
+                } catch (e) {
+                    return null;
                 }
-            }
+            };
 
-            // --- Strategy 2: Fallback to Yahoo search (original method) ---
-            const yahooQuery = `${queryRaw} 音域 最高音 地声 最低音`;
-            const yahooUrl = `https://search.yahoo.co.jp/search?p=${encodeURIComponent(yahooQuery)}`;
+            // --- Strategy 1: Try vocal-range.com via Google search ---
+            const googleQuery1 = `site:vocal-range.com ${queryRaw}`;
+            const googleUrl1 = `https://www.google.com/search?q=${encodeURIComponent(googleQuery1)}`;
 
-            const yahooRes = await fetch(yahooUrl, {
+            const googleRes1 = await fetch(googleUrl1, {
                 headers: {
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                     'Accept': 'text/html',
                     'Accept-Language': 'ja'
                 }
             });
-            const yahooHtml = await yahooRes.text();
+            const googleHtml1 = await googleRes1.text();
 
-            // Extract snippets from Yahoo
-            const parts = yahooHtml.split(/class="sw-CardBase/);
-            const texts: string[] = [];
-            for (let i = 1; i < parts.length && i < 10; i++) {
-                const raw = parts[i].slice(0, 5000);
-                const text = raw.replace(/<[^>]+>/g, ' ').replace(/&[^;]+;/g, ' ').replace(/\s+/g, ' ').trim();
-                texts.push(text);
-            }
-            const combinedText = texts.join(' || ');
-            const yahooResult = parseVocalRange(combinedText);
+            // Find first vocal-range.com link
+            const linkMatch1 = googleHtml1.match(/href="(https?:\/\/vocal-range\.com\/archives\/\d+\.html)"/);
 
-            if (yahooResult.highestNote || yahooResult.lowestNote) {
-                res.status(200).json({
-                    ...yahooResult,
-                    source: 'yahoo',
-                });
-                return;
+            if (linkMatch1) {
+                const result = await fetchAndParse(linkMatch1[1]);
+                if (result && (result.highestNote || result.lowestNote)) {
+                    res.status(200).json({
+                        ...result,
+                        source: 'vocal-range.com',
+                        url: linkMatch1[1]
+                    });
+                    return;
+                }
             }
 
-            // --- Nothing found ---
+            // --- Strategy 2: Try w.atwiki.jp/saikouon_dokoda via Google search ---
+            const googleQuery2 = `site:w.atwiki.jp/saikouon_dokoda ${queryRaw}`;
+            const googleUrl2 = `https://www.google.com/search?q=${encodeURIComponent(googleQuery2)}`;
+
+            const googleRes2 = await fetch(googleUrl2, {
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                    'Accept': 'text/html',
+                    'Accept-Language': 'ja'
+                }
+            });
+            const googleHtml2 = await googleRes2.text();
+
+            // Find first atwiki link
+            const linkMatch2 = googleHtml2.match(/href="(https?:\/\/w\.atwiki\.jp\/saikouon_dokoda\/pages\/\d+\.html)"/);
+
+            if (linkMatch2) {
+                const result = await fetchAndParse(linkMatch2[1]);
+                if (result && (result.highestNote || result.lowestNote)) {
+                    res.status(200).json({
+                        ...result,
+                        source: 'w.atwiki.jp',
+                        url: linkMatch2[1]
+                    });
+                    return;
+                }
+            }
+
+            // --- Nothing found on either site ---
             res.status(200).json({
                 notFound: true,
                 message: '該当データが見つかりませんでした。手動で入力してください。'
@@ -161,73 +163,7 @@ export default async function handler(req: any, res: any) {
         }
     }
 
-    // 3. Old Analyze Mode (kept for backwards compatibility)
-    if (q && mode === 'analyze') {
-        try {
-            const queryRaw = Array.isArray(q) ? q[0] : q;
-            const query = `${queryRaw} 音域 最高音 地声 最低音`;
-            const searchUrl = `https://search.yahoo.co.jp/search?p=${encodeURIComponent(query)}`;
-
-            const response = await fetch(searchUrl, {
-                headers: {
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-                    'Accept-Language': 'ja,en-US;q=0.9,en;q=0.8'
-                }
-            });
-            const html = await response.text();
-
-            const extractSnippets = (htmlText: string) => {
-                const parts = htmlText.split(/class="sw-CardBase/);
-                if (parts.length <= 1) return "";
-                const texts = [];
-                for (let i = 1; i < parts.length; i++) {
-                    const raw = parts[i].slice(0, 5000);
-                    const text = raw.replace(/<[^>]+>/g, ' ').replace(/&nbsp;|&amp;|&lt;|&gt;|&quot;|&#\d+;/g, (m) => {
-                        if (/^&#\d+;$/.test(m)) return ' ';
-                        return m === '&amp;' ? '&' : m === '&lt;' ? '<' : m === '&gt;' ? '>' : m === '&quot;' ? '"' : ' ';
-                    });
-                    texts.push(text.replace(/\s+/g, ' ').trim());
-                }
-                return texts.filter(Boolean).join(' || ');
-            };
-
-            const parseVocalRange = (text: string) => {
-                const t = (text || '').replace(/\s+/g, ' ');
-                let highest = null, chest = null, lowest = null;
-                const notePattern = "([a-zA-Z0-9#+-]+)";
-                const m1 = t.match(new RegExp(`最高音[：:\\s【]*${notePattern}`));
-                if (m1) highest = m1[1].trim();
-                const m2 = t.match(new RegExp(`地声(?:の)?最高(?:音)?[：:\\s【]*${notePattern}`));
-                if (m2) chest = m2[1].trim();
-                const m3 = t.match(new RegExp(`最低音[：:\\s【]*${notePattern}`));
-                if (m3) lowest = m3[1].trim();
-                return { highestNote: highest || null, highestChestNote: chest || null, lowestNote: lowest || null };
-            };
-
-            const combinedText = extractSnippets(html);
-            const result = parseVocalRange(combinedText);
-
-            const payload = {
-                ...result,
-                debug: {
-                    htmlLength: html.length,
-                    textLength: combinedText.length,
-                    status: response.status
-                }
-            };
-
-            res.status(200).json(payload);
-            return;
-
-        } catch (e: any) {
-            console.error(e);
-            res.status(500).json({ error: 'Analysis failed', details: e.message });
-            return;
-        }
-    }
-
-    // 4. Search Mode (DuckDuckGo HTML)
+    // 3. Search Mode (DuckDuckGo HTML for web search button)
     if (q) {
         try {
             const queryRaw = Array.isArray(q) ? q[0] : q;
