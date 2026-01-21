@@ -55,10 +55,11 @@ export function SongDetailModal({ isOpen, song, onClose, onSave, onDelete }: Son
                     highestChestNote: data.highestChestNote || prev.highestChestNote,
                     lowestNote: data.lowestNote || prev.lowestNote
                 }));
-                alert('音域情報を自動取得しました！\n誤りがある場合はWeb検索で確認してください。');
+                const debugInfo = data.debug ? `\n[Debug] Status: ${data.debug.status}` : '';
+                alert(`音域情報を自動取得しました！(Source: Yahoo)${debugInfo}\n誤りがある場合はWeb検索で確認してください。`);
             } else {
                 const debugInfo = data.debug ?
-                    `\n[Debug] Status: ${data.debug.status}, HTML: ${data.debug.htmlLength}ch, Text: ${data.debug.textLength}ch` : '';
+                    `\n[Debug] Status: ${data.debug.status}, HTML: ${data.debug.htmlLength}ch` : '';
                 alert(`情報が見つかりませんでした。\nWeb検索を試してみてください。${debugInfo}`);
             }
         } catch (e: any) {
