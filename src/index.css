@@ -7,13 +7,13 @@
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
   --text-accent: #38bdf8;
-  
+
   /* Glassmorphism */
   --glass-bg: rgba(30, 41, 59, 0.7);
   --glass-border: rgba(255, 255, 255, 0.08);
   --glass-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --glass-blur: blur(12px);
-  
+
   /* Accents */
   --primary-color: #38bdf8;
   --secondary-color: #818cf8;
@@ -52,13 +52,16 @@ button {
 ::-webkit-scrollbar {
   width: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
   background: var(--glass-border);
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-secondary);
 }
@@ -77,4 +80,39 @@ button {
   max-width: 800px;
   margin: 0 auto;
   padding: 1.5rem;
+}
+
+/* Mobile Enhancements */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+    max-width: 100%;
+  }
+
+  header {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 1rem;
+  }
+
+  header>div {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .modal-content {
+    width: 100% !important;
+    height: 100% !important;
+    max-height: none !important;
+    border-radius: 0 !important;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 80px;
+    /* Space for footer */
+  }
 }

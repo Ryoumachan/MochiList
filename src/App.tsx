@@ -109,6 +109,14 @@ function App() {
 
           <button
             className="glass-panel"
+            style={{ padding: '0.5rem 1rem', fontSize: '0.9rem', color: 'var(--text-primary)' }}
+            onClick={handleManualAdd}
+          >
+            手動登録
+          </button>
+
+          <button
+            className="glass-panel"
             title="ログアウト"
             style={{ padding: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}
             onClick={() => signOut()}
