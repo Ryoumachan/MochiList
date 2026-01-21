@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { X, Save, Trash2, Search, ExternalLink, Loader2 } from 'lucide-react';
+import { X, Save, Trash2, Search, ExternalLink, Loader2, Music2 } from 'lucide-react';
 import type { Song } from '../types';
 import { openRangeSearch } from '../utils/scraper';
+import { calculateBestShift } from '../utils/musicTheory';
 
 interface SongDetailModalProps {
     isOpen: boolean;
@@ -45,22 +46,21 @@ export function SongDetailModal({ isOpen, song, onClose, onSave, onDelete }: Son
         setIsAnalyzing(true);
         try {
             const query = `${formData.title} ${formData.artist}`;
-            const res = await fetch(`/api/proxy?mode=analyze&q=${encodeURIComponent(query)}`);
+            const res = await fetch(`/api/proxy?mode=analyze2&q=${encodeURIComponent(query)}`);
             const data = await res.json();
 
-            if (data.highestNote || data.highestChestNote || data.lowestNote) {
+            if (data.notFound) {
+                alert('情報が見つかりませんでした。\n手動で入力するか、Web検索を試してください。');
+            } else if (data.highestNote || data.highestChestNote || data.lowestNote) {
                 setFormData(prev => ({
                     ...prev,
                     highestNote: data.highestNote || prev.highestNote,
                     highestChestNote: data.highestChestNote || prev.highestChestNote,
                     lowestNote: data.lowestNote || prev.lowestNote
                 }));
-                const debugInfo = data.debug ? `\n[Debug] Status: ${data.debug.status}` : '';
-                alert(`音域情報を自動取得しました！(Source: Yahoo)${debugInfo}\n誤りがある場合はWeb検索で確認してください。`);
+                alert(`音域情報を自動取得しました！(Source: ${data.source || 'Web'})\n誤りがある場合はWeb検索で確認してください。`);
             } else {
-                const debugInfo = data.debug ?
-                    `\n[Debug] Status: ${data.debug.status}, HTML: ${data.debug.htmlLength}ch` : '';
-                alert(`情報が見つかりませんでした。\nWeb検索を試してみてください。${debugInfo}`);
+                alert('情報が見つかりませんでした。\nWeb検索を試してみてください。');
             }
         } catch (e: any) {
             alert(`エラーが発生しました: ${e.message}`);
@@ -74,6 +74,26 @@ export function SongDetailModal({ isOpen, song, onClose, onSave, onDelete }: Son
             openRangeSearch(formData.artist, formData.title);
         } else {
             alert('アーティスト名と曲名を入力してください');
+        }
+    };
+
+    const handleMyHighestMatch = () => {
+        const userHighest = localStorage.getItem('userHighestNote');
+        if (!userHighest) {
+            alert('先にヘッダーから「my最高音」を設定してください。');
+            return;
+        }
+        if (!formData.highestNote) {
+            alert('この曲の最高音が設定されていません。\n先に自動取得または手動入力してください。');
+            return;
+        }
+
+        const shift = calculateBestShift(formData.highestNote, userHighest);
+        if (shift !== null) {
+            setFormData(prev => ({ ...prev, myKeyShift: shift }));
+            alert(`Myキーを ${shift > 0 ? '+' : ''}${shift} に設定しました。\n(曲最高音: ${formData.highestNote} → あなたの最高音: ${userHighest})`);
+        } else {
+            alert('キー計算に失敗しました。音域情報を確認してください。');
         }
     };
 
@@ -136,34 +156,50 @@ export function SongDetailModal({ isOpen, song, onClose, onSave, onDelete }: Son
                             <span style={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px' }}>
                                 音域・キー情報
                             </span>
-                            <div style={{ display: 'flex', gap: '0.5rem' }}>
+                            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                                 <button
                                     type="button"
                                     onClick={handleAnalyze}
                                     disabled={isAnalyzing}
                                     style={{
-                                        fontSize: '0.8rem',
-                                        padding: '0.4rem 0.8rem',
+                                        fontSize: '0.75rem',
+                                        padding: '0.4rem 0.7rem',
                                         background: '#ef4444',
                                         color: 'white',
                                         borderRadius: '20px',
                                         display: 'flex', alignItems: 'center', gap: '4px',
-                                        opacity: isAnalyzing ? 0.7 : 1
+                                        opacity: isAnalyzing ? 0.7 : 1, border: 'none', cursor: 'pointer'
                                     }}
                                 >
                                     {isAnalyzing ? <Loader2 size={14} className="animate-spin" /> : <Search size={14} />}
-                                    自動音域取得
+                                    自動取得
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handleMyHighestMatch}
+                                    style={{
+                                        fontSize: '0.75rem',
+                                        padding: '0.4rem 0.7rem',
+                                        background: '#8b5cf6',
+                                        color: 'white',
+                                        borderRadius: '20px',
+                                        display: 'flex', alignItems: 'center', gap: '4px',
+                                        border: 'none', cursor: 'pointer'
+                                    }}
+                                >
+                                    <Music2 size={14} /> my最高音マッチ
                                 </button>
                                 <button
                                     type="button"
                                     onClick={handleRangeSearch}
                                     style={{
-                                        fontSize: '0.8rem',
-                                        padding: '0.4rem 0.8rem',
+                                        fontSize: '0.75rem',
+                                        padding: '0.4rem 0.7rem',
                                         background: 'rgba(56, 189, 248, 0.1)',
                                         color: '#38bdf8',
                                         borderRadius: '20px',
-                                        display: 'flex', alignItems: 'center', gap: '4px'
+                                        display: 'flex', alignItems: 'center', gap: '4px',
+                                        border: 'none', cursor: 'pointer'
                                     }}
                                 >
                                     <ExternalLink size={14} /> Web検索

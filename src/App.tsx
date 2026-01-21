@@ -261,7 +261,7 @@ function App() {
 
           {/* Top Left: My Vocal Range */}
           <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '12px', padding: '0.8rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ fontSize: '0.9rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>my声域</div>
+            <div style={{ fontSize: '0.9rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>my最高音</div>
             <div style={{
               display: 'flex', alignItems: 'center', gap: '0.5rem',
               background: '#e2e8f0', borderRadius: '8px', padding: '0.4rem 0.8rem',
