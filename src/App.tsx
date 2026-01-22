@@ -1,12 +1,12 @@
 import { useState, useMemo } from 'react';
-import { Plus, ArrowUpDown, LogOut, Loader2, Search, ChevronDown, ChevronUp, CheckSquare, Square } from 'lucide-react';
+import { Plus, ArrowUpDown, LogOut, Loader2, Search, ChevronDown, ChevronUp, CheckSquare, Square, Trash2 } from 'lucide-react';
 import { useSongs } from './hooks/useSongs';
 import { SongList } from './components/SongList';
 import { SongSearchModal } from './components/SongSearchModal';
 import { SongDetailModal } from './components/SongDetailModal';
 import { AuthPage } from './components/AuthPage';
 import { useAuth } from './context/AuthContext';
-import { calculateBestShift, generateNoteOptions } from './utils/musicTheory';
+import { generateNoteOptions } from './utils/musicTheory';
 import type { Song, SortOption } from './types';
 
 // Sort category (without direction)
@@ -14,7 +14,7 @@ type SortCategory = 'added' | 'keyShift' | 'highestNote' | 'artist' | 'title';
 
 function App() {
   const { user, loading, signOut } = useAuth();
-  const { songs, addSong, updateSong, updateSongs, deleteSong, getSortedSongs, isLoading: isDataLoading } = useSongs();
+  const { songs, addSong, updateSong, deleteSong, deleteSongs, getSortedSongs, isLoading: isDataLoading } = useSongs();
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [editingSong, setEditingSong] = useState<Partial<Song> | null>(null);
@@ -27,8 +27,6 @@ function App() {
   // Batch & User Settings
   const [userHighestNote, setUserHighestNote] = useState(() => localStorage.getItem('userHighestNote') || 'hiA');
   const [selectedSongIds, setSelectedSongIds] = useState<Set<string>>(new Set());
-  const [isBatchAnalyzing, setIsBatchAnalyzing] = useState(false);
-  const [batchProgress, setBatchProgress] = useState('');
 
   const noteOptions = useMemo(() => generateNoteOptions(), []);
 
@@ -155,102 +153,13 @@ function App() {
     }
   };
 
-  // --- Batch Operations ---
+  const handleBatchDelete = async () => {
+    if (selectedSongIds.size === 0) return;
 
-  const handleBatchAutoFetch = async () => {
-    const targets = songs.filter(s => !s.highestNote);
-    if (targets.length === 0) {
-      alert('音域情報の自動取得が必要な曲は見つかりませんでした。\n(すべての曲に情報が設定済みです)');
-      return;
-    }
+    if (!window.confirm(`${selectedSongIds.size}件の曲を削除してもよろしいですか？`)) return;
 
-    if (!window.confirm(`${targets.length}件の曲について自動取得を行いますか？\n(時間がかかる場合があります)`)) return;
-
-    setIsBatchAnalyzing(true);
-    const updates: { id: string, data: Partial<Song> }[] = [];
-    let notFoundCount = 0;
-
-    for (let i = 0; i < targets.length; i++) {
-      const song = targets[i];
-      setBatchProgress(`処理中: ${song.title} (${i + 1}/${targets.length})`);
-
-      try {
-        const query = `${song.title} ${song.artist}`;
-        // Use analyze2 mode for targeted site scraping
-        const res = await fetch(`/api/proxy?mode=analyze2&q=${encodeURIComponent(query)}`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data.notFound) {
-            notFoundCount++;
-          } else if (data.highestNote || data.lowestNote) {
-            updates.push({
-              id: song.id,
-              data: {
-                highestNote: data.highestNote,
-                highestChestNote: data.highestChestNote,
-                lowestNote: data.lowestNote
-              }
-            });
-          }
-        }
-        await new Promise(resolve => setTimeout(resolve, 700));
-      } catch (e) {
-        console.error(`Failed to fetch for ${song.title}`, e);
-      }
-    }
-
-    setBatchProgress('');
-
-    if (updates.length > 0) {
-      await updateSongs(updates);
-    }
-
-    let msg = '';
-    if (updates.length > 0) msg += `${updates.length}件の情報を更新しました。`;
-    if (notFoundCount > 0) msg += `\n${notFoundCount}件は該当データが見つかりませんでした。手動で入力してください。`;
-    if (updates.length === 0 && notFoundCount === 0) msg = '新しい情報は取得できませんでした。';
-
-    alert(msg);
-    setIsBatchAnalyzing(false);
-  };
-
-  const handleBatchAdjustKey = async () => {
-    if (!userHighestNote) {
-      alert("my最高音を設定してください");
-      return;
-    }
-
-    const targets = songs.filter(s => selectedSongIds.has(s.id));
-    if (targets.length === 0) {
-      alert("曲を選択してください");
-      return;
-    }
-
-    if (!window.confirm(`${targets.length}件の曲について、最高音が「${userHighestNote}」に合うようにキーを自動調整しますか？`)) return;
-
-    const updates: { id: string, data: Partial<Song> }[] = [];
-    let successCount = 0;
-
-    for (const song of targets) {
-      if (!song.highestNote) continue;
-
-      const shift = calculateBestShift(song.highestNote, userHighestNote);
-      if (shift !== null) {
-        updates.push({
-          id: song.id,
-          data: { myKeyShift: shift }
-        });
-        successCount++;
-      }
-    }
-
-    if (updates.length > 0) {
-      await updateSongs(updates);
-      alert(`${successCount}件のキーを調整しました！`);
-      setSelectedSongIds(new Set());
-    } else {
-      alert('調整可能な曲がありませんでした。(音域情報が不足している可能性があります)');
-    }
+    await deleteSongs(Array.from(selectedSongIds));
+    setSelectedSongIds(new Set());
   };
 
   // --- Sort Label ---
@@ -327,39 +236,26 @@ function App() {
             <Plus size={20} /> <span style={{ textShadow: '0 1px 2px rgba(0,0,0,0.2)' }}>手動登録</span>
           </button>
 
-          {/* Middle Left: Batch Actions Stack */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {/* Middle Left: Random Pickup */}
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <button
-              onClick={handleBatchAutoFetch}
-              disabled={isBatchAnalyzing}
+              onClick={handleRandomPickup}
               style={{
-                background: '#c2410c', color: 'white', borderRadius: '30px', fontWeight: 'bold',
-                padding: '0.8rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
-                fontSize: '0.9rem', width: '100%',
-                opacity: isBatchAnalyzing ? 0.7 : 1,
-                border: 'none', cursor: 'pointer',
-                boxShadow: '0 4px 10px rgba(194, 65, 12, 0.3)'
+                background: '#b91c1c', color: 'white',
+                padding: '0.8rem 1.2rem', borderRadius: '30px',
+                fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.5rem',
+                boxShadow: '0 4px 15px rgba(185, 28, 28, 0.4)',
+                border: 'none', cursor: 'pointer', width: '100%', height: '54px',
+                fontSize: '0.95rem', justifyContent: 'center'
               }}
             >
-              {isBatchAnalyzing ? <Loader2 size={16} className="animate-spin" /> : null}
-              一括音域設定
-            </button>
-            <button
-              onClick={handleBatchAdjustKey}
-              style={{
-                background: '#c2410c', color: 'white', borderRadius: '30px', fontWeight: 'bold',
-                padding: '0.8rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
-                fontSize: '0.8rem', width: '100%',
-                border: 'none', cursor: 'pointer',
-                boxShadow: '0 4px 10px rgba(194, 65, 12, 0.3)'
-              }}
-            >
-              一括my声域マッチ
+              <div style={{ fontSize: '1.4rem' }}>🎲</div>
+              ランダム選曲
             </button>
           </div>
 
           {/* Middle Right: Search (Big Circle) */}
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div style={{ display: 'grid', gridRow: 'span 1', justifyContent: 'center', alignItems: 'center' }}>
             <button
               onClick={() => setIsSearchOpen(true)}
               style={{
@@ -377,31 +273,7 @@ function App() {
             </button>
           </div>
 
-          {/* Bottom Right: Random (Floating-ish) */}
-          <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
-            <button
-              onClick={handleRandomPickup}
-              style={{
-                background: '#b91c1c', color: 'white',
-                padding: '0.6rem 1.2rem', borderRadius: '30px',
-                fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.5rem',
-                boxShadow: '0 4px 15px rgba(185, 28, 28, 0.4)',
-                border: 'none', cursor: 'pointer'
-              }}
-            >
-              <div style={{ fontSize: '1.2rem' }}>🎲</div>
-              ランダム選曲
-            </button>
-          </div>
-
         </div>
-
-        {/* Batch Progress */}
-        {batchProgress && (
-          <div style={{ marginTop: '1rem', padding: '0.5rem 1rem', background: 'rgba(56, 189, 248, 0.2)', borderRadius: '8px', textAlign: 'center', fontSize: '0.9rem' }}>
-            {batchProgress}
-          </div>
-        )}
       </header>
 
       {/* Sort Tools & Select All */}
@@ -410,20 +282,37 @@ function App() {
         marginBottom: '1.5rem', padding: '0 0.5rem', flexWrap: 'wrap', gap: '0.5rem'
       }}>
         {/* Select All */}
-        <button
-          onClick={handleSelectAll}
-          style={{
-            background: 'transparent', border: 'none', color: 'white',
-            display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer',
-            fontSize: '0.9rem'
-          }}
-        >
-          {selectedSongIds.size === visibleSongs.length && visibleSongs.length > 0
-            ? <CheckSquare size={20} />
-            : <Square size={20} />
-          }
-          全選択
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <button
+            onClick={handleSelectAll}
+            style={{
+              background: 'transparent', border: 'none', color: 'white',
+              display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer',
+              fontSize: '0.9rem', padding: 0
+            }}
+          >
+            {selectedSongIds.size === visibleSongs.length && visibleSongs.length > 0
+              ? <CheckSquare size={20} />
+              : <Square size={20} />
+            }
+            全選択
+          </button>
+
+          {selectedSongIds.size > 0 && (
+            <button
+              onClick={handleBatchDelete}
+              style={{
+                background: 'rgba(239, 68, 68, 0.2)', border: '1px solid rgba(239, 68, 68, 0.4)',
+                color: '#f87171', borderRadius: '6px', padding: '4px 12px',
+                display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer',
+                fontSize: '0.85rem', fontWeight: 'bold'
+              }}
+            >
+              <Trash2 size={16} />
+              選択削除 ({selectedSongIds.size})
+            </button>
+          )}
+        </div>
 
         {/* Sort Display */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'white', position: 'relative' }}>

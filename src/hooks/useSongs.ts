@@ -207,6 +207,22 @@ export function useSongs() {
 
         setSongs(prev => prev.filter(s => s.id !== id));
     };
+    const deleteSongs = async (ids: string[]) => {
+        if (!user || ids.length === 0) return;
+
+        const { error } = await supabase
+            .from('songs')
+            .delete()
+            .in('id', ids);
+
+        if (error) {
+            console.error('Error deleting songs:', error);
+            return;
+        }
+
+        const idSet = new Set(ids);
+        setSongs(prev => prev.filter(s => !idSet.has(s.id)));
+    };
 
     // Basic sorting
     const getSortedSongs = (option: SortOption): Song[] => {
@@ -244,6 +260,7 @@ export function useSongs() {
         updateSong,
         updateSongs,
         deleteSong,
+        deleteSongs,
         isLoading,
         getSortedSongs
     };
