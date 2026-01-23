@@ -19,6 +19,9 @@ export function AuthPage() {
                 const { error } = await supabase.auth.signUp({
                     email,
                     password,
+                    options: {
+                        emailRedirectTo: window.location.origin,
+                    }
                 });
                 if (error) throw error;
                 setMessage({ type: 'success', text: '登録確認メールを送信しました。メール内のリンクをクリックしてください。' });
@@ -111,6 +114,7 @@ export function AuthPage() {
           border-radius: var(--radius-sm);
           color: white;
           outline: none;
+          font-size: 16px;
         }
         .input-premium:focus {
           border-color: var(--primary-color);

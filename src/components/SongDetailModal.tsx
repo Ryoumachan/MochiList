@@ -329,6 +329,7 @@ export function SongDetailModal({ isOpen, song, onClose, onSave, onDelete }: Son
            border-radius: var(--radius-sm);
            color: white;
            outline: none;
+           font-size: 16px;
          }
          .input-premium:focus {
            border-color: var(--primary-color);

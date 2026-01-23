@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import { Search, Loader2, Music, X } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { Search, Loader2, Music, X, RotateCcw } from 'lucide-react';
 import { searchSongs, type ItunesSong } from '../utils/itunes';
+import { getRecommendations } from '../utils/recommendations';
 import type { Song } from '../types';
 
 interface SongSearchModalProps {
@@ -13,6 +14,39 @@ export function SongSearchModal({ isOpen, onClose, onSelect }: SongSearchModalPr
     const [query, setQuery] = useState('');
     const [results, setResults] = useState<ItunesSong[]>([]);
     const [loading, setLoading] = useState(false);
+
+    // Recommendations State
+    const [classicRecs, setClassicRecs] = useState<ItunesSong[]>([]);
+    const [recentRecs, setRecentRecs] = useState<ItunesSong[]>([]);
+    const [allClassic, setAllClassic] = useState<ItunesSong[]>([]);
+    const [allRecent, setAllRecent] = useState<ItunesSong[]>([]);
+    const [recsLoading, setRecsLoading] = useState(false);
+
+    const loadRecommendations = useCallback(async () => {
+        setRecsLoading(true);
+        try {
+            const data = await getRecommendations();
+            setClassicRecs(data.classic);
+            setRecentRecs(data.recent);
+            setAllClassic(data.allClassic);
+            setAllRecent(data.allRecent);
+        } finally {
+            setRecsLoading(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (isOpen && allClassic.length === 0) {
+            loadRecommendations();
+        }
+    }, [isOpen, allClassic.length, loadRecommendations]);
+
+    const handleReroll = (type: 'classic' | 'recent') => {
+        const list = type === 'classic' ? allClassic : allRecent;
+        const shuffled = [...list].sort(() => 0.5 - Math.random());
+        if (type === 'classic') setClassicRecs(shuffled.slice(0, 10));
+        else setRecentRecs(shuffled.slice(0, 10));
+    };
 
     if (!isOpen) return null;
 
@@ -47,19 +81,72 @@ export function SongSearchModal({ isOpen, onClose, onSelect }: SongSearchModalPr
         onClose();
     };
 
+    const RecommendationSection = ({ title, songs, type }: { title: string, songs: ItunesSong[], type: 'classic' | 'recent' }) => (
+        <div style={{ marginBottom: '2rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <h3 style={{ fontSize: '1rem', fontWeight: 'bold', color: 'var(--text-secondary)' }}>{title}</h3>
+                <button
+                    onClick={() => handleReroll(type)}
+                    style={{
+                        display: 'flex', alignItems: 'center', gap: '4px',
+                        fontSize: '0.8rem', color: 'var(--text-accent)',
+                        background: 'rgba(255,255,255,0.05)', padding: '4px 10px',
+                        borderRadius: '12px', cursor: 'pointer', border: 'none'
+                    }}
+                >
+                    <RotateCcw size={14} /> リロール
+                </button>
+            </div>
+            <div style={{ display: 'grid', gap: '0.75rem' }}>
+                {songs.map(item => (
+                    <SongItem key={`${type}-${item.trackId}`} item={item} />
+                ))}
+            </div>
+        </div>
+    );
+
+    const SongItem = ({ item }: { item: ItunesSong }) => (
+        <button
+            onClick={() => handleSelect(item)}
+            style={{
+                display: 'flex', alignItems: 'center', gap: '1rem',
+                width: '100%', textAlign: 'left',
+                background: 'rgba(255,255,255,0.03)',
+                padding: '0.75rem',
+                borderRadius: 'var(--radius-md)',
+                transition: 'background 0.2s',
+                border: 'none', cursor: 'pointer'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+            onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
+        >
+            {item.artworkUrl100 ? (
+                <img src={item.artworkUrl100} alt="" style={{ width: 44, height: 44, borderRadius: 4 }} />
+            ) : (
+                <div style={{ width: 44, height: 44, background: '#333', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Music size={20} />
+                </div>
+            )}
+            <div style={{ overflow: 'hidden' }}>
+                <div style={{ fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.trackName}</div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.artistName}</div>
+            </div>
+        </button>
+    );
+
     return (
         <div style={{
-            position: 'fixed', inset: 0, zIndex: 1000,
+            position: 'fixed', inset: 0, zIndex: 1200,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             background: 'rgba(0,0,0,0.6)',
-            backdropFilter: 'blur(4px)'
+            backdropFilter: 'blur(8px)'
         }}>
-            <div className="glass-panel" style={{ width: '90%', maxWidth: '600px', height: '80vh', display: 'flex', flexDirection: 'column', background: '#0f172a' }}>
+            <div className="glass-panel" style={{ width: '94%', maxWidth: '600px', height: '85vh', display: 'flex', flexDirection: 'column', background: '#0f172a', borderRadius: '24px', overflow: 'hidden' }}>
 
                 {/* Header */}
-                <div style={{ padding: '1rem', borderBottom: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <h2 style={{ fontSize: '1.2rem', fontWeight: 600 }}>楽曲検索</h2>
-                    <button onClick={onClose}><X size={24} color={'var(--text-secondary)'} /></button>
+                <div style={{ padding: '1.2rem', borderBottom: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h2 style={{ fontSize: '1.3rem', fontWeight: 800 }}>楽曲検索</h2>
+                    <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={24} color={'var(--text-secondary)'} /></button>
                 </div>
 
                 {/* Search Input */}
@@ -68,61 +155,61 @@ export function SongSearchModal({ isOpen, onClose, onSelect }: SongSearchModalPr
                         autoFocus
                         type="text"
                         value={query}
-                        onChange={e => setQuery(e.target.value)}
+                        onChange={e => {
+                            setQuery(e.target.value);
+                            if (!e.target.value) setResults([]);
+                        }}
                         placeholder="曲名・アーティスト名"
                         style={{
                             flex: 1,
-                            background: 'rgba(255,255,255,0.1)',
+                            background: 'rgba(255,255,255,0.05)',
                             border: '1px solid var(--glass-border)',
-                            borderRadius: 'var(--radius-md)',
-                            padding: '0.75rem',
+                            borderRadius: '16px',
+                            padding: '0.8rem 1rem',
                             color: 'white',
-                            outline: 'none'
+                            outline: 'none',
+                            fontSize: '16px'
                         }}
                     />
-                    <button type="submit" style={{ background: 'var(--primary-color)', padding: '0 1rem', borderRadius: 'var(--radius-md)', color: 'white' }}>
+                    <button type="submit" style={{ background: 'var(--primary-color)', width: '50px', height: '50px', borderRadius: '16px', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer' }}>
                         {loading ? <Loader2 className="animate-spin" /> : <Search />}
                     </button>
                 </form>
 
-                {/* Results */}
-                <div style={{ flex: 1, overflowY: 'auto', padding: '0 1rem 1rem' }}>
-                    {results.length === 0 && !loading && (
-                        <div style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: '2rem' }}>
-                            検索してください
+                {/* Results / Recommendations Area */}
+                <div style={{ flex: 1, overflowY: 'auto', padding: '0 1rem 1.5rem' }}>
+                    {loading ? (
+                        <div style={{ textAlign: 'center', padding: '3rem' }}>
+                            <Loader2 className="animate-spin" size={32} style={{ margin: '0 auto', color: 'var(--primary-color)' }} />
+                            <p style={{ marginTop: '1rem', color: 'var(--text-secondary)' }}>検索中...</p>
+                        </div>
+                    ) : query.trim() ? (
+                        // Search Results
+                        <div style={{ display: 'grid', gap: '0.75rem' }}>
+                            {results.length === 0 ? (
+                                <div style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: '2rem' }}>
+                                    見つかりませんでした
+                                </div>
+                            ) : (
+                                results.map(item => <SongItem key={item.trackId} item={item} />)
+                            )}
+                        </div>
+                    ) : (
+                        // Recommendations
+                        <div style={{ padding: '0.5rem 0' }}>
+                            {recsLoading ? (
+                                <div style={{ textAlign: 'center', padding: '3rem' }}>
+                                    <Loader2 className="animate-spin" size={32} style={{ margin: '0 auto', color: 'var(--primary-color)' }} />
+                                    <p style={{ marginTop: '1rem', color: 'var(--text-secondary)' }}>レコメンド取得中...</p>
+                                </div>
+                            ) : (
+                                <>
+                                    <RecommendationSection title="最近の曲" songs={recentRecs} type="recent" />
+                                    <RecommendationSection title="定番の曲" songs={classicRecs} type="classic" />
+                                </>
+                            )}
                         </div>
                     )}
-
-                    <div style={{ display: 'grid', gap: '0.75rem' }}>
-                        {results.map(item => (
-                            <button
-                                key={item.trackId}
-                                onClick={() => handleSelect(item)}
-                                style={{
-                                    display: 'flex', alignItems: 'center', gap: '1rem',
-                                    width: '100%', textAlign: 'left',
-                                    background: 'rgba(255,255,255,0.03)',
-                                    padding: '0.75rem',
-                                    borderRadius: 'var(--radius-md)',
-                                    transition: 'background 0.2s'
-                                }}
-                                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
-                                onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
-                            >
-                                {item.artworkUrl100 ? (
-                                    <img src={item.artworkUrl100} alt="" style={{ width: 48, height: 48, borderRadius: 4 }} />
-                                ) : (
-                                    <div style={{ width: 48, height: 48, background: '#333', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                        <Music size={24} />
-                                    </div>
-                                )}
-                                <div>
-                                    <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{item.trackName}</div>
-                                    <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>{item.artistName}</div>
-                                </div>
-                            </button>
-                        ))}
-                    </div>
                 </div>
             </div>
         </div>
