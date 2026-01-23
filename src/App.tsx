@@ -5,6 +5,7 @@ import { SongList } from './components/SongList';
 import { SongSearchModal } from './components/SongSearchModal';
 import { SongDetailModal } from './components/SongDetailModal';
 import { AuthPage } from './components/AuthPage';
+import { InstallPwaPrompt } from './components/InstallPwaPrompt';
 import { useAuth } from './context/AuthContext';
 import { generateNoteOptions } from './utils/musicTheory';
 import type { Song, SortOption } from './types';
@@ -395,6 +396,8 @@ function App() {
         onSave={handleSaveSong}
         onDelete={handleDeleteSong}
       />
+
+      <InstallPwaPrompt />
     </div>
   );
 }
