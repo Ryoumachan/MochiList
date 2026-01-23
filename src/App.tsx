@@ -177,7 +177,7 @@ function App() {
     <div className="container" style={{ paddingBottom: '80px' }}>
       <header className="glass-panel" style={{ padding: '1.5rem', marginBottom: '1.5rem', marginTop: '1rem', position: 'relative' }}>
         <div style={{ paddingRight: '2rem', marginBottom: '1.5rem' }}>
-          <h1 style={{ fontSize: '2rem', fontWeight: 'bold', background: 'linear-gradient(to right, #fff, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '0.2rem' }}>MochiList</h1>
+          <h1 style={{ fontSize: '2rem', fontWeight: 'bold', background: 'linear-gradient(to right, #fff, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '0.2rem' }}>モチリスト</h1>
           <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
             持ち歌管理ツール
           </p>
