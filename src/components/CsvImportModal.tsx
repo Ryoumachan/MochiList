@@ -105,19 +105,32 @@ export function CsvImportModal({ isOpen, onClose, playlists, onImportSong }: Csv
 
     const effectivePlaylist = targetPlaylist === '__new__' ? newPlaylistName.trim() : targetPlaylist;
 
-    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        const reader = new FileReader();
-        reader.onload = () => {
-            const text = reader.result as string;
-            const parsed = parseCsv(text);
-            setRows(parsed.map(r => ({ ...r, status: 'pending' as RowStatus })));
-            setDoneCount(0);
-            setFailCount(0);
-            setCurrentIndex(-1);
+
+        const readFile = (encoding: string): Promise<string> => {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result as string);
+                reader.readAsText(file, encoding);
+            });
         };
-        reader.readAsText(file, 'UTF-8');
+
+        let text = await readFile('UTF-8');
+        // Excelなどから出力されたShift-JISファイルの場合、UTF-8で読むと「\uFFFD」(置換文字)が含まれる
+        if (text.includes('\uFFFD')) {
+            text = await readFile('Shift_JIS');
+        }
+
+        const parsed = parseCsv(text);
+        setRows(parsed.map(r => ({ ...r, status: 'pending' as RowStatus })));
+        setDoneCount(0);
+        setFailCount(0);
+        setCurrentIndex(-1);
+        
+        // Reset the file input so the same file could be selected again if needed
+        if (fileRef.current) fileRef.current.value = '';
     };
 
     const handleStartImport = async () => {
