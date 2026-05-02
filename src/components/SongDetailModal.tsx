@@ -10,9 +10,10 @@ interface SongDetailModalProps {
     onClose: () => void;
     onSave: (song: Partial<Song>) => void;
     onDelete?: (id: string) => void;
+    playlists?: string[];
 }
 
-export function SongDetailModal({ isOpen, song, onClose, onSave, onDelete }: SongDetailModalProps) {
+export function SongDetailModal({ isOpen, song, onClose, onSave, onDelete, playlists = [] }: SongDetailModalProps) {
     const [formData, setFormData] = useState<Partial<Song>>({});
     const [isAnalyzing, setIsAnalyzing] = useState(false);
 
@@ -274,6 +275,24 @@ export function SongDetailModal({ isOpen, song, onClose, onSave, onDelete }: Son
                             />
                         </label>
                     </div>
+
+                    {/* Playlist */}
+                    <label className="field-label">
+                        <span>プレイリスト</span>
+                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                            <select
+                                className="input-premium"
+                                value={formData.playlist || ''}
+                                onChange={e => handleChange('playlist', e.target.value || undefined)}
+                                style={{ flex: 1, appearance: 'none' }}
+                            >
+                                <option value="" style={{ background: '#1e293b' }}>未分類</option>
+                                {playlists.map(p => (
+                                    <option key={p} value={p} style={{ background: '#1e293b' }}>{p}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </label>
 
                     <label className="field-label">
                         <span>メモ (200文字以内)</span>

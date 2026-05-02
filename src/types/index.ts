@@ -15,6 +15,7 @@ export interface Song {
   // User Settings
   myKeyShift: number; // 0, -1, +2
   memo: string;
+  playlist?: string; // Playlist/folder name
 
   createdAt: string; // ISO Date string
   updatedAt: string;

@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react';
-import { Plus, ArrowUpDown, LogOut, Loader2, Search, ChevronDown, ChevronUp, CheckSquare, Square, Trash2 } from 'lucide-react';
+import { Plus, ArrowUpDown, LogOut, Loader2, Search, ChevronDown, ChevronUp, CheckSquare, Square, Trash2, FileText, FolderOpen } from 'lucide-react';
 import { useSongs } from './hooks/useSongs';
 import { SongList } from './components/SongList';
 import { SongSearchModal } from './components/SongSearchModal';
 import { SongDetailModal } from './components/SongDetailModal';
+import { CsvImportModal } from './components/CsvImportModal';
 import { AuthPage } from './components/AuthPage';
 import { useAuth } from './context/AuthContext';
 import { generateNoteOptions } from './utils/musicTheory';
@@ -14,9 +15,10 @@ type SortCategory = 'added' | 'keyShift' | 'highestNote' | 'artist' | 'title';
 
 function App() {
   const { user, loading, signOut } = useAuth();
-  const { songs, addSong, updateSong, deleteSong, deleteSongs, getSortedSongs, isLoading: isDataLoading } = useSongs();
+  const { songs, addSong, updateSong, deleteSong, deleteSongs, getSortedSongs, isLoading: isDataLoading, playlists } = useSongs();
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isCsvImportOpen, setIsCsvImportOpen] = useState(false);
   const [editingSong, setEditingSong] = useState<Partial<Song> | null>(null);
 
   // New Sort State: category + direction
@@ -27,6 +29,9 @@ function App() {
   // Batch & User Settings
   const [userHighestNote, setUserHighestNote] = useState(() => localStorage.getItem('userHighestNote') || 'hiA');
   const [selectedSongIds, setSelectedSongIds] = useState<Set<string>>(new Set());
+
+  // Playlist filter
+  const [activePlaylist, setActivePlaylist] = useState<string | null>(null); // null = all songs
 
   const noteOptions = useMemo(() => generateNoteOptions(), []);
 
@@ -42,7 +47,12 @@ function App() {
     }
   }, [sortCategory, sortAsc]);
 
-  const visibleSongs = useMemo(() => getSortedSongs(sortOption), [songs, sortOption, getSortedSongs]);
+  const visibleSongs = useMemo(() => {
+    const sorted = getSortedSongs(sortOption);
+    if (activePlaylist === null) return sorted;
+    if (activePlaylist === '__unclassified__') return sorted.filter(s => !s.playlist);
+    return sorted.filter(s => s.playlist === activePlaylist);
+  }, [songs, sortOption, getSortedSongs, activePlaylist]);
 
   if (loading) {
     return (
@@ -81,7 +91,7 @@ function App() {
   };
 
   const handleManualAdd = () => {
-    setEditingSong({ myKeyShift: 0 });
+    setEditingSong({ myKeyShift: 0, playlist: activePlaylist === '__unclassified__' ? undefined : (activePlaylist || undefined) });
   };
 
   const handleRandomPickup = () => {
@@ -236,6 +246,21 @@ function App() {
             <Plus size={20} /> <span style={{ textShadow: '0 1px 2px rgba(0,0,0,0.2)' }}>手動登録</span>
           </button>
 
+          {/* CSV Import */}
+          <button
+            onClick={() => setIsCsvImportOpen(true)}
+            style={{
+              background: '#0d9488', color: 'white', borderRadius: '30px', fontWeight: 'bold',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+              boxShadow: '0 4px 10px rgba(13, 148, 136, 0.3)',
+              fontSize: '0.9rem',
+              border: 'none', cursor: 'pointer', padding: '0.7rem 1rem',
+              gridColumn: 'span 2'
+            }}
+          >
+            <FileText size={18} /> CSV インポート
+          </button>
+
           {/* Middle Left: Random Pickup */}
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <button
@@ -275,6 +300,64 @@ function App() {
 
         </div>
       </header>
+
+      {/* Playlist Tabs */}
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: '0.5rem',
+        padding: '0 0.5rem', marginBottom: '1rem',
+        overflowX: 'auto', WebkitOverflowScrolling: 'touch',
+        scrollbarWidth: 'none'
+      }}>
+        <button
+          onClick={() => { setActivePlaylist(null); setSelectedSongIds(new Set()); }}
+          style={{
+            padding: '0.5rem 1rem', borderRadius: '20px',
+            fontSize: '0.85rem', fontWeight: activePlaylist === null ? 'bold' : 'normal',
+            background: activePlaylist === null ? 'rgba(99, 102, 241, 0.3)' : 'rgba(255,255,255,0.05)',
+            border: activePlaylist === null ? '1px solid rgba(99, 102, 241, 0.5)' : '1px solid rgba(255,255,255,0.1)',
+            color: activePlaylist === null ? '#a5b4fc' : 'var(--text-secondary)',
+            cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0,
+            transition: 'all 0.2s'
+          }}
+        >
+          すべて ({songs.length})
+        </button>
+        <button
+          onClick={() => { setActivePlaylist('__unclassified__'); setSelectedSongIds(new Set()); }}
+          style={{
+            padding: '0.5rem 1rem', borderRadius: '20px',
+            fontSize: '0.85rem', fontWeight: activePlaylist === '__unclassified__' ? 'bold' : 'normal',
+            background: activePlaylist === '__unclassified__' ? 'rgba(99, 102, 241, 0.3)' : 'rgba(255,255,255,0.05)',
+            border: activePlaylist === '__unclassified__' ? '1px solid rgba(99, 102, 241, 0.5)' : '1px solid rgba(255,255,255,0.1)',
+            color: activePlaylist === '__unclassified__' ? '#a5b4fc' : 'var(--text-secondary)',
+            cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0,
+            transition: 'all 0.2s'
+          }}
+        >
+          未分類 ({songs.filter(s => !s.playlist).length})
+        </button>
+        {playlists.map(pl => {
+          const count = songs.filter(s => s.playlist === pl).length;
+          return (
+            <button
+              key={pl}
+              onClick={() => { setActivePlaylist(pl); setSelectedSongIds(new Set()); }}
+              style={{
+                padding: '0.5rem 1rem', borderRadius: '20px',
+                fontSize: '0.85rem', fontWeight: activePlaylist === pl ? 'bold' : 'normal',
+                background: activePlaylist === pl ? 'rgba(99, 102, 241, 0.3)' : 'rgba(255,255,255,0.05)',
+                border: activePlaylist === pl ? '1px solid rgba(99, 102, 241, 0.5)' : '1px solid rgba(255,255,255,0.1)',
+                color: activePlaylist === pl ? '#a5b4fc' : 'var(--text-secondary)',
+                cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0,
+                display: 'flex', alignItems: 'center', gap: '0.3rem',
+                transition: 'all 0.2s'
+              }}
+            >
+              <FolderOpen size={14} /> {pl} ({count})
+            </button>
+          );
+        })}
+      </div>
 
       {/* Sort Tools & Select All */}
       <div style={{
@@ -394,6 +477,14 @@ function App() {
         onClose={() => setEditingSong(null)}
         onSave={handleSaveSong}
         onDelete={handleDeleteSong}
+        playlists={playlists}
+      />
+
+      <CsvImportModal
+        isOpen={isCsvImportOpen}
+        onClose={() => setIsCsvImportOpen(false)}
+        playlists={playlists}
+        onImportSong={async (song) => { await addSong(song); }}
       />
     </div>
   );

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import type { Song, SortOption } from '../types';
 import { getNoteValue } from '../utils/music';
 import { supabase } from '../lib/supabase';
@@ -44,6 +44,7 @@ export function useSongs() {
                     lowestNote: d.lowest_note,
                     myKeyShift: d.my_key_shift,
                     memo: d.memo,
+                    playlist: d.playlist || undefined,
                     createdAt: d.created_at,
                     updatedAt: d.updated_at
                 }));
@@ -71,6 +72,7 @@ export function useSongs() {
             lowest_note: song.lowestNote,
             my_key_shift: song.myKeyShift,
             memo: song.memo,
+            playlist: song.playlist || null,
             updated_at: new Date().toISOString()
         };
 
@@ -100,6 +102,7 @@ export function useSongs() {
                 lowestNote: data.lowest_note,
                 myKeyShift: data.my_key_shift,
                 memo: data.memo,
+                playlist: data.playlist || undefined,
                 createdAt: data.created_at,
                 updatedAt: data.updated_at
             };
@@ -124,6 +127,7 @@ export function useSongs() {
         if (updates.lowestNote !== undefined) dbUpdates.lowest_note = updates.lowestNote;
         if (updates.myKeyShift !== undefined) dbUpdates.my_key_shift = updates.myKeyShift;
         if (updates.memo !== undefined) dbUpdates.memo = updates.memo;
+        if (updates.playlist !== undefined) dbUpdates.playlist = updates.playlist || null;
 
         const { error } = await supabase
             .from('songs')
@@ -169,6 +173,7 @@ export function useSongs() {
             if (u.data.lowestNote !== undefined) dbData.lowest_note = u.data.lowestNote;
             if (u.data.myKeyShift !== undefined) dbData.my_key_shift = u.data.myKeyShift;
             if (u.data.memo !== undefined) dbData.memo = u.data.memo;
+            if (u.data.playlist !== undefined) dbData.playlist = u.data.playlist || null;
             return dbData;
         });
 
@@ -254,6 +259,15 @@ export function useSongs() {
         return sorted;
     };
 
+    // Derive unique playlist names from all songs
+    const playlists = useMemo(() => {
+        const names = new Set<string>();
+        songs.forEach(s => {
+            if (s.playlist) names.add(s.playlist);
+        });
+        return Array.from(names).sort((a, b) => a.localeCompare(b, 'ja'));
+    }, [songs]);
+
     return {
         songs,
         addSong,
@@ -262,6 +276,7 @@ export function useSongs() {
         deleteSong,
         deleteSongs,
         isLoading,
-        getSortedSongs
+        getSortedSongs,
+        playlists
     };
 }

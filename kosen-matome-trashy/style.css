@@ -1,0 +1,310 @@
+/* 基本的にちょっと古臭い、あるいは要素が多すぎてゴチャついたデザイン */
+body {
+    background-color: #efefef;
+    font-family: "MS PGothic", "IPAMonaPGothic", "sans-serif";
+    /* あえてのMS ゴシック風 */
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+header {
+    background-color: #fff;
+    border-bottom: 3px solid #db0000;
+    /* 情熱の赤（まとめサイト風） */
+    padding: 20px 0;
+}
+
+.header-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.2rem;
+    color: #db0000;
+    letter-spacing: -1px;
+}
+
+header p {
+    font-size: 0.8rem;
+    color: #666;
+    margin: 5px 0 0 0;
+}
+
+.nav-bar {
+    background-color: #333;
+    color: #fff;
+}
+
+.nav-bar ul {
+    max-width: 1000px;
+    margin: 0 auto;
+    list-style: none;
+    display: flex;
+    padding: 0;
+}
+
+.nav-bar li {
+    padding: 12px 20px;
+    border-right: 1px solid #444;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.nav-bar li:hover {
+    background-color: #444;
+}
+
+.content-wrapper {
+    max-width: 1000px;
+    margin: 20px auto;
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 20px;
+    padding: 0 10px;
+}
+
+main {
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.05);
+}
+
+.post-header {
+    border-bottom: 2px solid #eee;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+}
+
+.category {
+    background-color: #db0000;
+    color: #fff;
+    padding: 2px 8px;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+.entry-title {
+    margin: 10px 0;
+    font-size: 1.6rem;
+    line-height: 1.3;
+    color: #000;
+}
+
+.post-meta {
+    font-size: 0.75rem;
+    color: #999;
+}
+
+/* 広告パーツ（絶妙なダサさ） */
+.ad-banner {
+    margin: 20px 0;
+}
+
+.ad-box {
+    border: 2px dashed #ff9900;
+    background-color: #fff9f0;
+    padding: 15px;
+    position: relative;
+    text-align: center;
+}
+
+.ad-label {
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    background: #ff9900;
+    color: #fff;
+    font-size: 0.6rem;
+    padding: 2px 5px;
+}
+
+.ad-content .ad-text {
+    display: block;
+    color: #0044cc;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-decoration: underline;
+    margin-bottom: 10px;
+}
+
+.ad-btn {
+    background-color: #ff3300;
+    color: #fff;
+    padding: 5px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+
+.ad-square-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.ad-square {
+    width: 250px;
+    height: 150px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 0.8rem;
+    padding: 10px;
+}
+
+.ad-wide {
+    margin: 30px 0;
+    background: linear-gradient(to bottom, #fffad6, #fff4a3);
+    border: 1px solid #e6db55;
+    padding: 15px;
+}
+
+.ad-wide-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.ad-icon {
+    font-size: 2.5rem;
+}
+
+.ad-copy {
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.ad-copy strong {
+    color: #d00;
+    font-size: 1.1rem;
+}
+
+/* コンテンツ装飾 */
+.entry-content b {
+    color: #d00;
+    background: linear-gradient(transparent 70%, #ffea00 70%);
+}
+
+.kosen-voice {
+    background-color: #f9f9f9;
+    border-left: 5px solid #ccc;
+    padding: 15px;
+    margin: 20px 0;
+    font-style: italic;
+    color: #555;
+    line-height: 1.8;
+}
+
+.matome-notice {
+    background-color: #fffbe6;
+    border: 1px solid #ffe58f;
+    padding: 15px;
+    margin: 30px 0;
+}
+
+.matome-notice h3 {
+    margin-top: 0;
+    font-size: 1rem;
+    color: #856404;
+}
+
+/* サイドバー */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.side-widget {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 15px;
+}
+
+.side-widget h3 {
+    font-size: 1rem;
+    margin-top: 0;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #333;
+}
+
+.side-widget ol {
+    padding-left: 20px;
+    font-size: 0.85rem;
+}
+
+.side-widget li {
+    margin-bottom: 8px;
+    color: #0044cc;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.side-ad {
+    border: 1px solid #ddd;
+    padding: 10px;
+    background: #fff;
+    text-align: center;
+}
+
+.ad-gacha {
+    border: 2px solid #ff00ff;
+    padding: 15px;
+    background: #fff0ff;
+    text-align: center;
+}
+
+/* コメント欄 */
+.comments {
+    border-top: 2px solid #333;
+    margin-top: 40px;
+    padding-top: 20px;
+}
+
+.comment-item {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.comment-item .user {
+    color: #008800;
+    font-weight: bold;
+}
+
+.comment-item .date {
+    font-size: 0.7rem;
+    color: #999;
+    margin-left: 10px;
+}
+
+.comment-item p {
+    margin: 10px 0 0 0;
+    font-size: 0.9rem;
+}
+
+footer {
+    text-align: center;
+    padding: 40px 0;
+    color: #999;
+    font-size: 0.8rem;
+    background-color: #fff;
+    border-top: 1px solid #ccc;
+    margin-top: 40px;
+}
+
+@media (max-width: 768px) {
+    .content-wrapper {
+        grid-template-columns: 1fr;
+    }
+}
