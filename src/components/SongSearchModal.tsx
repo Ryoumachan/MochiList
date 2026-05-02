@@ -8,9 +8,11 @@ interface SongSearchModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSelect: (songData: Partial<Song>) => void;
+    existingSongs: Song[];
+    activePlaylist: string | null;
 }
 
-export function SongSearchModal({ isOpen, onClose, onSelect }: SongSearchModalProps) {
+export function SongSearchModal({ isOpen, onClose, onSelect, existingSongs, activePlaylist }: SongSearchModalProps) {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState<ItunesSong[]>([]);
     const [loading, setLoading] = useState(false);
@@ -64,6 +66,19 @@ export function SongSearchModal({ isOpen, onClose, onSelect }: SongSearchModalPr
     };
 
     const handleSelect = (itunesSong: ItunesSong) => {
+        const isDuplicate = existingSongs.some(
+            s => s.title === itunesSong.trackName &&
+                 s.artist === itunesSong.artistName &&
+                 s.playlist === (activePlaylist === '__unclassified__' ? undefined : (activePlaylist || undefined))
+        );
+
+        if (isDuplicate) {
+            const label = activePlaylist && activePlaylist !== '__unclassified__' ? `「${activePlaylist}」` : '現在のリスト';
+            if (!window.confirm(`この曲は既に${label}に登録されています。\n追加してもよろしいですか？`)) {
+                return;
+            }
+        }
+
         // Convert ItunesSong to partial Song
         const newSong: Partial<Song> = {
             title: itunesSong.trackName,
@@ -75,7 +90,8 @@ export function SongSearchModal({ isOpen, onClose, onSelect }: SongSearchModalPr
             memo: '',
             highestNote: '',
             highestChestNote: '',
-            lowestNote: ''
+            lowestNote: '',
+            playlist: activePlaylist === '__unclassified__' ? undefined : (activePlaylist || undefined)
         };
         onSelect(newSong);
         onClose();
@@ -105,34 +121,51 @@ export function SongSearchModal({ isOpen, onClose, onSelect }: SongSearchModalPr
         </div>
     );
 
-    const SongItem = ({ item }: { item: ItunesSong }) => (
-        <button
-            onClick={() => handleSelect(item)}
-            style={{
-                display: 'flex', alignItems: 'center', gap: '1rem',
-                width: '100%', textAlign: 'left',
-                background: 'rgba(255,255,255,0.03)',
-                padding: '0.75rem',
-                borderRadius: 'var(--radius-md)',
-                transition: 'background 0.2s',
-                border: 'none', cursor: 'pointer'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
-            onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
-        >
-            {item.artworkUrl100 ? (
-                <img src={item.artworkUrl100} alt="" style={{ width: 44, height: 44, borderRadius: 4 }} />
-            ) : (
-                <div style={{ width: 44, height: 44, background: '#333', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Music size={20} />
+    const SongItem = ({ item }: { item: ItunesSong }) => {
+        const isDuplicate = existingSongs.some(
+            s => s.title === item.trackName &&
+                 s.artist === item.artistName &&
+                 s.playlist === (activePlaylist === '__unclassified__' ? undefined : (activePlaylist || undefined))
+        );
+
+        return (
+            <button
+                onClick={() => handleSelect(item)}
+                style={{
+                    display: 'flex', alignItems: 'center', gap: '1rem',
+                    width: '100%', textAlign: 'left',
+                    background: 'rgba(255,255,255,0.03)',
+                    padding: '0.75rem',
+                    borderRadius: 'var(--radius-md)',
+                    transition: 'background 0.2s',
+                    border: 'none', cursor: 'pointer',
+                    position: 'relative'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+                onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
+            >
+                {item.artworkUrl100 ? (
+                    <img src={item.artworkUrl100} alt="" style={{ width: 44, height: 44, borderRadius: 4 }} />
+                ) : (
+                    <div style={{ width: 44, height: 44, background: '#333', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Music size={20} />
+                    </div>
+                )}
+                <div style={{ overflow: 'hidden', flex: 1 }}>
+                    <div style={{ fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.trackName}</div>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.artistName}</div>
                 </div>
-            )}
-            <div style={{ overflow: 'hidden' }}>
-                <div style={{ fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.trackName}</div>
-                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.artistName}</div>
-            </div>
-        </button>
-    );
+                {isDuplicate && (
+                    <div style={{
+                        fontSize: '0.7rem', color: '#fca5a5', background: 'rgba(239, 68, 68, 0.2)',
+                        padding: '2px 6px', borderRadius: '4px', whiteSpace: 'nowrap'
+                    }}>
+                        登録済
+                    </div>
+                )}
+            </button>
+        );
+    };
 
     return (
         <div style={{

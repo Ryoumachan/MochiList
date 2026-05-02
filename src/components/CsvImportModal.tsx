@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { X, Upload, Loader2, CheckCircle, AlertCircle, Clock, FileText } from 'lucide-react';
-import { searchSongs } from '../utils/itunes';
+import { searchSongs, type ItunesSong } from '../utils/itunes';
 import type { Song } from '../types';
 
 interface CsvImportModalProps {
@@ -75,12 +75,12 @@ async function fetchHighestNote(title: string, artist: string): Promise<string |
     }
 }
 
-async function fetchThumbnail(title: string, artist: string): Promise<string | null> {
+async function fetchItunesData(title: string, artist: string): Promise<ItunesSong | null> {
     try {
-        const query = `${title} ${artist}`;
+        const query = `${title} ${artist}`.trim();
         const hits = await searchSongs(query);
-        if (hits.length > 0 && hits[0].artworkUrl100) {
-            return hits[0].artworkUrl100;
+        if (hits.length > 0) {
+            return hits[0];
         }
         return null;
     } catch {
@@ -143,16 +143,24 @@ export function CsvImportModal({ isOpen, onClose, playlists, onImportSong }: Csv
             let highestNote: string | null = null;
             let fetchFailed = false;
 
-            // Fetch thumbnail
+            let finalTitle = row.title;
+            let finalArtist = row.artist;
+
+            // Fetch iTunes data
             try {
-                artworkUrl = await fetchThumbnail(row.title, row.artist);
+                const itunesData = await fetchItunesData(row.title, row.artist);
+                if (itunesData) {
+                    artworkUrl = itunesData.artworkUrl100 || null;
+                    if (!finalTitle) finalTitle = itunesData.trackName;
+                    if (!finalArtist) finalArtist = itunesData.artistName;
+                }
             } catch {
                 artworkUrl = null;
             }
 
             // Fetch highest note
             try {
-                highestNote = await fetchHighestNote(row.title, row.artist);
+                highestNote = await fetchHighestNote(finalTitle, finalArtist);
             } catch {
                 highestNote = null;
             }
@@ -164,8 +172,8 @@ export function CsvImportModal({ isOpen, onClose, playlists, onImportSong }: Csv
             // Always import (even with empty data)
             try {
                 await onImportSong({
-                    title: row.title,
-                    artist: row.artist,
+                    title: finalTitle,
+                    artist: finalArtist,
                     album: '',
                     artworkUrl: artworkUrl || '',
                     lyricsSnippet: '',
