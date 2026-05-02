@@ -8,6 +8,14 @@ export function useSongs() {
     const { user } = useAuth();
     const [songs, setSongs] = useState<Song[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [customPlaylists, setCustomPlaylists] = useState<string[]>(() => {
+        try {
+            const stored = localStorage.getItem('mochilist_custom_playlists');
+            return stored ? JSON.parse(stored) : [];
+        } catch {
+            return [];
+        }
+    });
 
     // Load from Supabase
     useEffect(() => {
@@ -259,14 +267,25 @@ export function useSongs() {
         return sorted;
     };
 
-    // Derive unique playlist names from all songs
+    // Derive unique playlist names from all songs + custom empty playlists
     const playlists = useMemo(() => {
         const names = new Set<string>();
         songs.forEach(s => {
             if (s.playlist) names.add(s.playlist);
         });
+        customPlaylists.forEach(p => names.add(p));
         return Array.from(names).sort((a, b) => a.localeCompare(b, 'ja'));
-    }, [songs]);
+    }, [songs, customPlaylists]);
+
+    const addCustomPlaylist = (name: string) => {
+        if (!name.trim()) return;
+        setCustomPlaylists(prev => {
+            if (prev.includes(name)) return prev;
+            const next = [...prev, name];
+            localStorage.setItem('mochilist_custom_playlists', JSON.stringify(next));
+            return next;
+        });
+    };
 
     return {
         songs,
@@ -277,6 +296,7 @@ export function useSongs() {
         deleteSongs,
         isLoading,
         getSortedSongs,
-        playlists
+        playlists,
+        addCustomPlaylist
     };
 }

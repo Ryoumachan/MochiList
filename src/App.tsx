@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Plus, ArrowUpDown, LogOut, Loader2, Search, ChevronDown, ChevronUp, CheckSquare, Square, Trash2, FileText, FolderOpen } from 'lucide-react';
+import { Plus, ArrowUpDown, LogOut, Loader2, Search, ChevronDown, ChevronUp, CheckSquare, Square, Trash2, FileText, FolderOpen, Download } from 'lucide-react';
 import { useSongs } from './hooks/useSongs';
 import { SongList } from './components/SongList';
 import { SongSearchModal } from './components/SongSearchModal';
@@ -15,7 +15,7 @@ type SortCategory = 'added' | 'keyShift' | 'highestNote' | 'artist' | 'title';
 
 function App() {
   const { user, loading, signOut } = useAuth();
-  const { songs, addSong, updateSong, deleteSong, deleteSongs, getSortedSongs, isLoading: isDataLoading, playlists } = useSongs();
+  const { songs, addSong, updateSong, deleteSong, deleteSongs, getSortedSongs, isLoading: isDataLoading, playlists, addCustomPlaylist } = useSongs();
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCsvImportOpen, setIsCsvImportOpen] = useState(false);
@@ -172,6 +172,51 @@ function App() {
     setSelectedSongIds(new Set());
   };
 
+  const handleExportCsv = () => {
+    if (visibleSongs.length === 0) {
+      alert('エクスポートする曲がありません');
+      return;
+    }
+    if (!window.confirm(`${visibleSongs.length}件の曲をCSVでエクスポートしますか？`)) return;
+
+    // Header array
+    const headers = ['曲名', 'アーティスト名', 'マイキー', '裏声最高音', '地声最高音', '地声最低音', 'メモ'];
+    
+    // Create rows
+    const csvRows = visibleSongs.map(s => {
+      const row = [
+        s.title || '',
+        s.artist || '',
+        s.myKeyShift.toString(),
+        s.highestNote || '',
+        s.highestChestNote || '',
+        s.lowestNote || '',
+        s.memo || ''
+      ];
+      // Escape quotes and wrap with quotes
+      return row.map(str => `"${str.replace(/"/g, '""')}"`).join(',');
+    });
+
+    const csvContent = [headers.join(','), ...csvRows].join('\n');
+    
+    // Add BOM for Excel UTF-8 support
+    const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
+    const blob = new Blob([bom, csvContent], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    
+    const defaultFileName = activePlaylist && activePlaylist !== '__unclassified__' 
+      ? `playlist_${activePlaylist}.csv` 
+      : 'mochilist.csv';
+      
+    link.download = defaultFileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   // --- Sort Label ---
   const sortCategoryLabel = (cat: SortCategory) => {
     switch (cat) {
@@ -246,20 +291,33 @@ function App() {
             <Plus size={20} /> <span style={{ textShadow: '0 1px 2px rgba(0,0,0,0.2)' }}>手動登録</span>
           </button>
 
-          {/* CSV Import */}
-          <button
-            onClick={() => setIsCsvImportOpen(true)}
-            style={{
-              background: '#0d9488', color: 'white', borderRadius: '30px', fontWeight: 'bold',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
-              boxShadow: '0 4px 10px rgba(13, 148, 136, 0.3)',
-              fontSize: '0.9rem',
-              border: 'none', cursor: 'pointer', padding: '0.7rem 1rem',
-              gridColumn: 'span 2'
-            }}
-          >
-            <FileText size={18} /> CSV インポート
-          </button>
+          {/* CSV Import / Export row */}
+          <div style={{ gridColumn: 'span 2', display: 'flex', gap: '1rem' }}>
+            <button
+              onClick={() => setIsCsvImportOpen(true)}
+              style={{
+                background: '#0d9488', color: 'white', borderRadius: '30px', fontWeight: 'bold',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                boxShadow: '0 4px 10px rgba(13, 148, 136, 0.3)',
+                fontSize: '0.9rem', flex: 1,
+                border: 'none', cursor: 'pointer', padding: '0.7rem 1rem'
+              }}
+            >
+              <FileText size={18} /> インポート
+            </button>
+            <button
+              onClick={handleExportCsv}
+              style={{
+                background: '#4f46e5', color: 'white', borderRadius: '30px', fontWeight: 'bold',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                boxShadow: '0 4px 10px rgba(79, 70, 229, 0.3)',
+                fontSize: '0.9rem', flex: 1,
+                border: 'none', cursor: 'pointer', padding: '0.7rem 1rem'
+              }}
+            >
+              <Download size={18} /> エクスポート
+            </button>
+          </div>
 
           {/* Middle Left: Random Pickup */}
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -357,6 +415,27 @@ function App() {
             </button>
           );
         })}
+        <button
+          onClick={() => { 
+            const name = window.prompt("新しいプレイリスト名を入力してください:");
+            if (name && name.trim()) {
+              addCustomPlaylist(name.trim());
+              setActivePlaylist(name.trim());
+            }
+          }}
+          style={{
+            padding: '0.5rem 1rem', borderRadius: '20px',
+            fontSize: '0.85rem', fontWeight: 'bold',
+            background: 'transparent',
+            border: '1px dashed rgba(255,255,255,0.3)',
+            color: 'var(--text-secondary)',
+            cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0,
+            display: 'flex', alignItems: 'center', gap: '0.3rem',
+            transition: 'all 0.2s'
+          }}
+        >
+          <Plus size={14} /> 新規作成
+        </button>
       </div>
 
       {/* Sort Tools & Select All */}

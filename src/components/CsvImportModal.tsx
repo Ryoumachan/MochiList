@@ -48,6 +48,10 @@ function parseCsv(text: string): CsvRow[] {
         parts.push(current.trim());
 
         if (parts.length >= 2) {
+            // Skip header row roughly by checking if the first cell is '曲名'
+            if (parts[0] === '曲名') {
+                continue;
+            }
             rows.push({
                 title: parts[0] || '',
                 artist: parts[1] || '',
