@@ -548,6 +548,8 @@ function App() {
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
         onSelect={handleSearchResultSelect}
+        existingSongs={songs}
+        activePlaylist={activePlaylist}
       />
 
       <SongDetailModal

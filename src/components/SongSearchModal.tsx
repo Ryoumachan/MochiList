@@ -12,7 +12,7 @@ interface SongSearchModalProps {
     activePlaylist: string | null;
 }
 
-export function SongSearchModal({ isOpen, onClose, onSelect, existingSongs, activePlaylist }: SongSearchModalProps) {
+export function SongSearchModal({ isOpen, onClose, onSelect, existingSongs = [], activePlaylist = null }: SongSearchModalProps) {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState<ItunesSong[]>([]);
     const [loading, setLoading] = useState(false);
